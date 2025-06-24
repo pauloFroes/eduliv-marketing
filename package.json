@@ -6,7 +6,12 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "setup": "echo '🚀 Iniciando setup completo do projeto...' && npm install && echo '📄 Copiando arquivo de ambiente...' && cp env.example .env && echo '🐳 Subindo banco de dados...' && docker-compose up -d && echo '⏳ Aguardando banco inicializar...' && sleep 10 && echo '🔄 Gerando cliente Prisma...' && npx prisma generate && echo '📊 Executando migrações...' && npx prisma migrate deploy && echo '🌱 Executando seed...' && npx tsx prisma/seed.ts && echo '✅ Setup concluído! Iniciando servidor...' && npm run dev",
+    "db:up": "docker-compose up -d",
+    "db:down": "docker-compose down",
+    "db:reset": "docker-compose down -v && docker-compose up -d && sleep 10 && npx prisma migrate deploy && npx tsx prisma/seed.ts",
+    "seed": "npx tsx prisma/seed.ts"
   },
   "dependencies": {
     "@prisma/client": "^6.10.1",
