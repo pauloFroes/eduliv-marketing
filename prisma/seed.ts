@@ -14,7 +14,6 @@ async function main() {
   console.log("🌱 Iniciando seed do banco de dados...");
 
   try {
-    // Verificar se o usuário já existe
     const existingUser = await prisma.user.findUnique({
       where: { email: seedUser.email },
     });
@@ -24,7 +23,6 @@ async function main() {
       return;
     }
 
-    // Criar usuário administrador
     console.log("👤 Criando usuário administrador...");
 
     const passwordCrypt = await pwdCrypt(seedUser.password);
