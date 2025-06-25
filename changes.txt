@@ -1,0 +1,1 @@
+- Seed agora importa diretamente variável global `db`.

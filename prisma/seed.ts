@@ -1,20 +1,27 @@
-import { PrismaClient } from "./generated";
+import { db } from "@/lib/db";
 import { pwdCrypt } from "../src/helpers/pwd";
 import { textFirstName } from "../src/helpers/text";
+import dotenv from "dotenv";
 
-const prisma = new PrismaClient();
+// Carrega as variáveis de ambiente
+dotenv.config();
 
 const seedUser = {
-  email: "admin@eduliv.com",
-  fullName: "Administrador EduLIV",
-  password: "admin123456",
+  email: process.env.SEED_USER_EMAIL,
+  fullName: process.env.SEED_USER_FULL_NAME,
+  password: process.env.SEED_USER_PASSWORD,
 };
 
 async function main() {
   console.log("🌱 Iniciando seed do banco de dados...");
 
+  if (!seedUser.email || !seedUser.fullName || !seedUser.password) {
+    console.error("❌ Variáveis de ambiente não configuradas.");
+    process.exit(1);
+  }
+
   try {
-    const existingUser = await prisma.user.findUnique({
+    const existingUser = await db.user.findUnique({
       where: { email: seedUser.email },
     });
 
@@ -28,7 +35,7 @@ async function main() {
     const passwordCrypt = await pwdCrypt(seedUser.password);
     const displayName = textFirstName(seedUser.fullName);
 
-    const user = await prisma.user.create({
+    const user = await db.user.create({
       data: {
         email: seedUser.email,
         fullName: seedUser.fullName,
@@ -61,5 +68,5 @@ main()
     process.exit(1);
   })
   .finally(async () => {
-    await prisma.$disconnect();
+    await db.$disconnect();
   });
