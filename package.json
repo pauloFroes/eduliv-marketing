@@ -7,10 +7,10 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "setup": "echo '🚀 Iniciando setup completo do projeto...' && npm install && echo '📄 Copiando arquivo de ambiente...' && cp env.example .env && echo '🐳 Subindo banco de dados...' && docker-compose up -d && echo '⏳ Aguardando banco inicializar...' && sleep 10 && echo '🔄 Gerando cliente Prisma...' && npx prisma generate && echo '📊 Executando migrações...' && npx prisma migrate deploy && echo '🌱 Executando seed...' && npx tsx prisma/seed.ts && echo '✅ Setup concluído! Iniciando servidor...' && npm run dev",
+    "setup": "echo '🚀 Iniciando setup completo do projeto...' && npm install && echo '📄 Preparando arquivo de ambiente...' && cp env.example .env && echo '🐳 Subindo banco de dados...' && docker-compose up -d && echo '⏳ Aguardando banco inicializar (20s)...' && sleep 20 && echo '🔄 Gerando cliente Prisma...' && npx prisma generate && echo '🔍 Sincronizando schema do banco...' && npx prisma db push --accept-data-loss && echo '🌱 Executando seed...' && npx tsx prisma/seed.ts && echo '✅ Setup concluído! Iniciando servidor...' && npm run dev",
     "db:up": "docker-compose up -d",
     "db:down": "docker-compose down",
-    "db:reset": "docker-compose down -v && docker-compose up -d && sleep 10 && npx prisma migrate deploy && npx tsx prisma/seed.ts",
+    "db:reset": "docker-compose down -v && docker-compose up -d && sleep 20 && npx prisma generate && npx prisma db push --accept-data-loss && npx tsx prisma/seed.ts",
     "seed": "npx tsx prisma/seed.ts"
   },
   "dependencies": {
