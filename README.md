@@ -44,7 +44,18 @@ npm run db:generate
 
 # Run migrations
 npm run db:migrate
+
+# Seed database with test data
+npm run db:seed
 ```
+
+### Seed Data
+
+O seed cria um usuário administrador de teste:
+
+- **Email**: admin@eduliv.com
+- **Senha**: admin123456
+- **Nome**: Administrador EduLIV
 
 ## Learn More
 
