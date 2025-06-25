@@ -1,5 +1,5 @@
 export type UserSession = {
-  email: string;
-  displayName: string;
-  phone?: string;
-};
+  email: string
+  displayName: string
+  phone?: string
+}

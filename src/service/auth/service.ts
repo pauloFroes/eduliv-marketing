@@ -1,61 +1,60 @@
-import { db } from "@/lib/db";
-import {
-  schemaAuthLogin,
-  schemaAuthLogout,
-  schemaAuthVerifyUserIdToken,
-} from "./schema";
-import { AuthLogout, AuthVerifyUserIdToken } from "./types";
-import { cookieDelete, cookieGet, cookieSet } from "@/helpers/cookie";
-import { jwtSign, jwtVerify } from "@/helpers/jwt";
-import { AuthLogin } from "./types";
-import { pwdVerify } from "@/helpers/pwd";
+'use server'
 
-export const serviceAuthLogin = async (params: AuthLogin): Promise<boolean> => {
-  const paramsValid = schemaAuthLogin.safeParse(params);
-  if (!paramsValid.success) return false;
-  const { email, password } = paramsValid.data;
+import { db } from '@/lib/db'
+import { schemaAuthLogin, schemaAuthLogout, schemaAuthVerifyUserIdToken } from './schema'
+import { AuthLogout, AuthVerifyUserIdToken } from './types'
+import { cookieDelete, cookieGet, cookieSet } from '@/helpers/cookie'
+import { jwtSign, jwtVerify } from '@/helpers/jwt'
+import { AuthLogin } from './types'
+import { pwdVerify } from '@/helpers/pwd'
+import { ResponseType } from '@/types'
 
-  const userDb = await db.user.findUnique({ where: { email } });
-  if (!userDb) return false;
+const isProduction = process.env.NODE_ENV === 'production'
 
-  const passwordValid = await pwdVerify(password, userDb.password);
-  if (!passwordValid) return false;
+export const serviceAuthLogin = async (params: AuthLogin): Promise<ResponseType> => {
+  const paramsValid = schemaAuthLogin.safeParse(params)
+  if (!paramsValid.success) return { success: false, error: 'validationError' }
+  const { email, password } = paramsValid.data
 
-  const token = jwtSign({ userId: userDb.id });
+  const userDb = await db.user.findUnique({ where: { email } })
+  if (!userDb) return { success: false, error: 'invalidCredentials' }
 
-  await cookieSet("token", token);
+  const passwordValid = await pwdVerify(password, userDb.password)
+  if (!passwordValid) return { success: false, error: 'invalidCredentials' }
 
-  return true;
-};
+  const token = jwtSign({ userId: userDb.id })
+  await cookieSet({
+    name: 'token',
+    value: token,
+    options: { maxAge: 60 * 60 * 24 * 30, httpOnly: true, path: '/', secure: isProduction },
+  })
 
-export const serviceAuthLogout = async (
-  params: AuthLogout
-): Promise<boolean> => {
-  const paramsValid = schemaAuthLogout.safeParse(params);
-  if (!paramsValid.success) return false;
+  return { success: true }
+}
 
-  const token = await cookieGet("token");
-  if (!token) return false;
+export const serviceAuthLogout = async (params: AuthLogout): Promise<ResponseType> => {
+  const paramsValid = schemaAuthLogout.safeParse(params)
+  if (!paramsValid.success) return { success: false, error: 'validationError' }
 
-  await cookieDelete("token");
+  const token = await cookieGet({ name: 'token' })
+  if (!token) return { success: false, error: 'unauthorized' }
 
-  return true;
-};
+  await cookieDelete({ name: 'token' })
+  return { success: true }
+}
 
-export const serviceAuthVerifyUserIdToken = async (
-  params: AuthVerifyUserIdToken
-): Promise<boolean> => {
-  const paramsValid = schemaAuthVerifyUserIdToken.safeParse(params);
-  if (!paramsValid.success) return false;
+export const serviceAuthVerifyUserIdToken = async (params: AuthVerifyUserIdToken): Promise<ResponseType> => {
+  const paramsValid = schemaAuthVerifyUserIdToken.safeParse(params)
+  if (!paramsValid.success) return { success: false, error: 'validationError' }
 
-  const token = await cookieGet("token");
-  if (!token) return false;
+  const token = await cookieGet({ name: 'token' })
+  if (!token) return { success: false, error: 'unauthorized' }
 
-  const decoded = jwtVerify(token);
-  if (!decoded) return false;
+  const decoded = jwtVerify(token)
+  if (!decoded) return { success: false, error: 'unauthorized' }
 
-  const userDb = await db.user.findUnique({ where: { id: decoded.userId } });
-  if (!userDb) return false;
+  const userDb = await db.user.findUnique({ where: { id: decoded.userId } })
+  if (!userDb) return { success: false, error: 'unauthorized' }
 
-  return true;
-};
+  return { success: true }
+}
