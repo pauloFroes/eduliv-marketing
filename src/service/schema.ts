@@ -3,7 +3,10 @@ import { z } from "zod";
 
 export const schemaUserEmail = z
   .string()
-  .email("Email inválido")
+  .refine((email) => {
+    const cleanEmail = email.toLowerCase().trim();
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanEmail);
+  }, "Email inválido")
   .transform((email) => email.toLowerCase().trim());
 
 export const schemaUserPassword = z
