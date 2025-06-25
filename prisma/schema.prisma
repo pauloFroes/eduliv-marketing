@@ -8,6 +8,28 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum IntegrationProvider {
+  FACEBOOK
+}
+
+enum EventName {
+  INIT_PAGE
+  VIEW_CONTENT
+  INITIATE_CHECKOUT
+  PURCHASE
+  CUSTOM
+}
+
+enum EventStatus {
+  SUCCESS
+  FAILED
+}
+
+enum EventChannel {
+  PIXEL_CLIENT
+  WEBHOOK_PROVIDER
+}
+
 model User {
   id          String   @id @default(uuid())
   createdAt   DateTime @default(now())
@@ -17,4 +39,35 @@ model User {
   fullName    String
   displayName String
   phone       String?
+}
+
+model Integration {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  provider IntegrationProvider
+
+  // Campos específicos do Facebook
+  pixelId     String?
+  accessToken String?
+  events      Event[]
+}
+
+model Event {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  dedupKey  String
+  eventTime DateTime
+
+  traceId String? // Facebook Pixel
+
+  name    EventName
+  status  EventStatus
+  channel EventChannel
+
+  integration   Integration @relation(fields: [integrationId], references: [id], onDelete: Cascade)
+  integrationId String
 }
