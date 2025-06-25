@@ -35,9 +35,10 @@
     "eslint": "^9",
     "eslint-config-next": "15.3.4",
     "jsdom": "^26.1.0",
+    "prettier": "^3.6.1",
     "tailwindcss": "^4",
+    "tsx": "^4.20.3",
     "typescript": "^5",
-    "vitest": "^3.2.4",
-    "tsx": "^4.20.3"
+    "vitest": "^3.2.4"
   }
 }
