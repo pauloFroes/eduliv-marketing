@@ -1,14 +1,8 @@
 import { toast } from 'sonner'
 
-import { ErrorType, ResponsePromise } from '@/types'
+import { ErrorType } from '@/types'
 
-interface FormToast<T> {
-  promise: Promise<ResponsePromise<T>>
-  loading: string
-  success: string
-  errorMap?: Partial<Record<ErrorType, string>>
-  actionOnSuccess?: () => void
-}
+import { FormToast } from './types'
 
 export const formToast = <T>({
   promise,
@@ -20,9 +14,7 @@ export const formToast = <T>({
   return new Promise<T>((resolve, reject) => {
     toast.promise(
       promise.then(res => {
-        if (!res.success) {
-          return Promise.reject(res.error)
-        }
+        if (!res.success) return Promise.reject(res.error)
         actionOnSuccess()
         return res.data as T
       }),

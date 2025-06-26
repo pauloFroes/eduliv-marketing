@@ -1,10 +1,8 @@
 import jwt from 'jsonwebtoken'
 
-import { config } from '@/lib/config'
+import { config } from '@/lib/config/config'
 
-type JwtPayload = {
-  userId: string
-}
+import { JwtPayload } from './types'
 
 export const jwtSign = (payload: JwtPayload): string => {
   return jwt.sign(payload, config.auth.jwtSecret!, { expiresIn: config.auth.jwtExpiresIn })

@@ -13,12 +13,12 @@
  */
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { cookieGet } from '@/helpers/cookie'
-import { jwtVerify } from '@/helpers/jwt'
-import { pwdCrypt } from '@/helpers/pwd'
-import { textCapitalize, textFirstName } from '@/helpers/text'
-import { config } from '@/lib/config'
-import { db } from '@/lib/db'
+import { cookieGet } from '@/helpers/cookie/helper'
+import { jwtVerify } from '@/helpers/jwt/helper'
+import { pwdCrypt } from '@/helpers/pwd/helper'
+import { textCapitalize, textFirstName } from '@/helpers/text/helper'
+import { config } from '@/lib/config/config'
+import { db } from '@/lib/db/db'
 
 import { serviceUserCreate, serviceUserGetByToken } from './service'
 import { UserCreate, UserGetByToken } from './types'
@@ -38,7 +38,7 @@ type MockUser = {
 type MockUserSession = Pick<MockUser, 'email' | 'displayName' | 'phone' | 'fullName'>
 
 // Mocks das dependências
-vi.mock('@/lib/db', () => ({
+vi.mock('@/lib/db/db', () => ({
   db: {
     user: {
       findUnique: vi.fn(),
@@ -47,20 +47,20 @@ vi.mock('@/lib/db', () => ({
   },
 }))
 
-vi.mock('@/helpers/pwd', () => ({
+vi.mock('@/helpers/pwd/helper', () => ({
   pwdCrypt: vi.fn(),
 }))
 
-vi.mock('@/helpers/text', () => ({
+vi.mock('@/helpers/text/helper', () => ({
   textFirstName: vi.fn(),
   textCapitalize: vi.fn(),
 }))
 
-vi.mock('@/helpers/cookie', () => ({
+vi.mock('@/helpers/cookie/helper', () => ({
   cookieGet: vi.fn(),
 }))
 
-vi.mock('@/helpers/jwt', () => ({
+vi.mock('@/helpers/jwt/helper', () => ({
   jwtVerify: vi.fn(),
 }))
 

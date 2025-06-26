@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt'
 
-import { config } from '@/lib/config'
+import { config } from '@/lib/config/config'
 
 export const pwdCrypt = async (password: string): Promise<string> => {
   return await bcrypt.hash(password, config.auth.bcryptCost)

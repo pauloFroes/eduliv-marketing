@@ -1,10 +1,10 @@
 'use server'
 
-import { cookieDelete, cookieGet, cookieSet } from '@/helpers/cookie'
-import { jwtSign, jwtVerify } from '@/helpers/jwt'
-import { pwdVerify } from '@/helpers/pwd'
-import { config } from '@/lib/config'
-import { db } from '@/lib/db'
+import { cookieDelete, cookieGet, cookieSet } from '@/helpers/cookie/helper'
+import { jwtSign, jwtVerify } from '@/helpers/jwt/helper'
+import { pwdVerify } from '@/helpers/pwd/helper'
+import { config } from '@/lib/config/config'
+import { db } from '@/lib/db/db'
 import { ResponsePromise } from '@/types'
 
 import { schemaAuthLogin } from './schema'

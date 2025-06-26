@@ -26,7 +26,7 @@ vi.mock('next/navigation', () => ({
 }))
 
 // Mock da configuração centralizada para testes
-vi.mock('@/lib/config', () => ({
+vi.mock('@/lib/config/config', () => ({
   config: {
     auth: {
       tokenCookieName: 'token',

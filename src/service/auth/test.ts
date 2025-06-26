@@ -1,10 +1,10 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { cookieDelete, cookieGet, cookieSet } from '@/helpers/cookie'
-import { jwtSign, jwtVerify } from '@/helpers/jwt'
-import { pwdVerify } from '@/helpers/pwd'
-import { config } from '@/lib/config'
-import { db } from '@/lib/db'
+import { cookieDelete, cookieGet, cookieSet } from '@/helpers/cookie/helper'
+import { jwtSign, jwtVerify } from '@/helpers/jwt/helper'
+import { pwdVerify } from '@/helpers/pwd/helper'
+import { config } from '@/lib/config/config'
+import { db } from '@/lib/db/db'
 import { ErrorType, ResponsePromise } from '@/types'
 
 import { User } from '../../../prisma/generated'
@@ -13,7 +13,7 @@ import { serviceAuthLogin, serviceAuthLogout, serviceAuthVerifyUserIdToken } fro
 import { AuthLogin } from './types'
 
 // Mocks das dependências
-vi.mock('@/lib/db', () => ({
+vi.mock('@/lib/db/db', () => ({
   db: {
     user: {
       findUnique: vi.fn(),
@@ -21,17 +21,17 @@ vi.mock('@/lib/db', () => ({
   },
 }))
 
-vi.mock('@/helpers/pwd', () => ({
+vi.mock('@/helpers/pwd/helper', () => ({
   pwdVerify: vi.fn(),
 }))
 
-vi.mock('@/helpers/cookie', () => ({
+vi.mock('@/helpers/cookie/helper', () => ({
   cookieGet: vi.fn(),
   cookieSet: vi.fn(),
   cookieDelete: vi.fn(),
 }))
 
-vi.mock('@/helpers/jwt', () => ({
+vi.mock('@/helpers/jwt/helper', () => ({
   jwtSign: vi.fn(),
   jwtVerify: vi.fn(),
 }))

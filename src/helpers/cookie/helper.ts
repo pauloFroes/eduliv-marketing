@@ -1,15 +1,6 @@
 import { cookies } from 'next/headers'
 
-interface Cookie {
-  name: string
-  value?: string
-  options?: {
-    maxAge?: number
-    path?: string
-    httpOnly?: boolean
-    secure?: boolean
-  }
-}
+import { Cookie } from './types'
 
 export const cookieSet = async (params: Cookie): Promise<void> => {
   const { name, value, options } = params
