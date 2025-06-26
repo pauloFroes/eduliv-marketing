@@ -20,7 +20,6 @@
     "docker:restart": "docker-compose restart",
     "docker:logs": "docker-compose logs -f postgres",
     "docker:clean": "docker-compose down -v --remove-orphans"
-    "lint": "next lint"
   },
   "dependencies": {
     "@prisma/client": "^6.10.1",
@@ -50,6 +49,6 @@
     "tailwindcss": "^4",
     "typescript": "^5",
     "vitest": "^3.2.4",
-    "tsx": "^4.20.3",
+    "tsx": "^4.20.3"
   }
 }
