@@ -12,3 +12,14 @@ Object.assign(process.env, {
 vi.mock('next/headers', () => ({
   cookies: vi.fn(),
 }))
+
+// Mock do config
+vi.mock('@/lib/config/config', () => ({
+  config: {
+    auth: {
+      jwtSecret: 'test-secret-key',
+      jwtExpiresIn: '3600',
+      bcryptCost: 1
+    }
+  }
+}))
