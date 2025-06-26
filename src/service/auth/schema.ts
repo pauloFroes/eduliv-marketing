@@ -1,11 +1,8 @@
-import { z } from "zod";
-import { schemaUserEmail, schemaUserPassword } from "../schema";
+import { z } from 'zod'
 
-export const schemaAuthVerifyUserIdToken = z.undefined();
-
-export const schemaAuthLogout = z.undefined();
+import { schemaUserEmail, schemaUserPassword } from '../schema'
 
 export const schemaAuthLogin = z.object({
   email: schemaUserEmail,
   password: schemaUserPassword,
-});
+})

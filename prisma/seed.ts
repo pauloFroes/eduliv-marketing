@@ -1,65 +1,74 @@
-import { PrismaClient } from "./generated";
-import { pwdCrypt } from "../src/helpers/pwd";
-import { textFirstName } from "../src/helpers/text";
+import dotenv from 'dotenv'
 
-const prisma = new PrismaClient();
+import { db } from '@/lib/db/db'
+
+import { pwdCrypt } from '../src/helpers/pwd/helper'
+import { textFirstName } from '../src/helpers/text/helper'
+
+// Carrega as variáveis de ambiente
+dotenv.config()
 
 const seedUser = {
-  email: "admin@eduliv.com",
-  fullName: "Administrador EduLIV",
-  password: "admin123456",
-};
+  email: process.env.SEED_USER_EMAIL,
+  fullName: process.env.SEED_USER_FULL_NAME,
+  password: process.env.SEED_USER_PASSWORD,
+}
 
 async function main() {
-  console.log("🌱 Iniciando seed do banco de dados...");
+  console.log('🌱 Iniciando seed do banco de dados...')
+
+  if (!seedUser.email || !seedUser.fullName || !seedUser.password) {
+    console.error('❌ Variáveis de ambiente não configuradas.')
+    process.exit(1)
+  }
 
   try {
-    const existingUser = await prisma.user.findUnique({
+    const existingUser = await db.user.findUnique({
       where: { email: seedUser.email },
-    });
+    })
 
     if (existingUser) {
-      console.log("ℹ️  Usuário administrador já existe no banco de dados.");
-      return;
+      console.log('ℹ️  Usuário administrador já existe no banco de dados.')
+      return
     }
 
-    console.log("👤 Criando usuário administrador...");
+    console.log('👤 Criando usuário administrador...')
 
-    const passwordCrypt = await pwdCrypt(seedUser.password);
-    const displayName = textFirstName(seedUser.fullName);
+    const passwordCrypt = await pwdCrypt(seedUser.password)
+    const displayName = textFirstName(seedUser.fullName)
 
-    const user = await prisma.user.create({
+    const user = await db.user.create({
       data: {
         email: seedUser.email,
         fullName: seedUser.fullName,
         displayName,
         password: passwordCrypt,
       },
-    });
+    })
 
     if (user) {
-      console.log("✅ Usuário administrador criado com sucesso!");
-      console.log(`📧 Email: ${seedUser.email}`);
-      console.log(`🔑 Senha: ${seedUser.password}`);
-      console.log(`👤 Nome: ${user.fullName}`);
-      console.log(`🏷️  Display Name: ${user.displayName}`);
+      console.log('✅ Usuário administrador criado com sucesso!')
+      console.log(`📧 Email: ${seedUser.email}`)
+      console.log(`🔑 Senha: ${seedUser.password}`)
+      console.log(`👤 Nome: ${user.fullName}`)
+      console.log(`🏷️  Display Name: ${user.displayName}`)
     } else {
-      console.error("❌ Erro ao criar usuário administrador.");
-      process.exit(1);
+      console.error('❌ Erro ao criar usuário administrador.')
+      process.exit(1)
     }
 
-    console.log("🎉 Seed concluído com sucesso!");
+    console.log('🎉 Seed concluído com sucesso!')
   } catch (error) {
-    console.error("❌ Erro durante o seed:", error);
-    process.exit(1);
+    console.error('❌ Erro durante o seed:', error)
+    process.exit(1)
   }
 }
 
 main()
-  .catch((e) => {
-    console.error("❌ Erro fatal durante o seed:", e);
-    process.exit(1);
+  .catch(e => {
+    console.error('❌ Erro fatal durante o seed:', e)
+    process.exit(1)
   })
   .finally(async () => {
-    await prisma.$disconnect();
-  });
+    await db.$disconnect()
+  })

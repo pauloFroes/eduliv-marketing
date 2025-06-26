@@ -1,13 +1,13 @@
-import type { NextConfig } from "next";
+import dotenv from 'dotenv'
+import dotenvExpand from 'dotenv-expand'
 
-import dotenv from "dotenv";
-import dotenvExpand from "dotenv-expand";
+import type { NextConfig } from 'next'
 
-const myEnv = dotenv.config();
-dotenvExpand.expand(myEnv);
+const myEnv = dotenv.config()
+dotenvExpand.expand(myEnv)
 
 const nextConfig: NextConfig = {
   /* config options here */
-};
+}
 
-export default nextConfig;
+export default nextConfig

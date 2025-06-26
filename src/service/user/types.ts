@@ -1,5 +1,6 @@
-import { z } from "zod";
-import { schemaUserCreate, schemaUserGetByToken } from "./schema";
+import { z } from 'zod'
 
-export type UserCreate = z.infer<typeof schemaUserCreate>;
-export type UserGetByToken = z.infer<typeof schemaUserGetByToken>;
+import { schemaUserCreate, schemaUserGetByToken } from './schema'
+
+export type UserCreate = z.infer<typeof schemaUserCreate>
+export type UserGetByToken = z.infer<typeof schemaUserGetByToken>

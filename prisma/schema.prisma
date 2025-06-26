@@ -8,6 +8,44 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+/**
+ * ENUMS
+ */
+enum IntegrationProvider {
+  FACEBOOK
+}
+
+enum IntegrationSource {
+  WEBSITE
+  APP
+}
+
+enum EventName {
+  INIT_PAGE
+  VIEW_CONTENT
+  INITIATE_CHECKOUT
+  PURCHASE
+  CUSTOM
+}
+
+enum EventStatus {
+  SUCCESS
+  FAILED
+}
+
+enum EventOrigin {
+  PIXEL_CLIENT
+  WEBHOOK_PROVIDER
+}
+
+enum WebhookStatus {
+  SUCCESS
+  FAILED
+}
+
+/**
+ * MODELS
+ */
 model User {
   id          String   @id @default(uuid())
   createdAt   DateTime @default(now())
@@ -17,4 +55,92 @@ model User {
   fullName    String
   displayName String
   phone       String?
+}
+
+model Integration {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  funnelSlug String?
+
+  provider IntegrationProvider
+  source   IntegrationSource
+
+  events Event[]
+
+  // Campos específicos do Facebook
+  pixelId     String?
+  accessToken String?
+}
+
+model WebhookLog {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  body   String
+  status WebhookStatus
+
+  events Event[]
+}
+
+model Event {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  dedupKey  String
+  eventTime DateTime
+
+  name   EventName
+  status EventStatus
+  origin EventOrigin
+
+  referer     String?
+  urlFull     String?
+  pageTitle   String?
+  pathName    String?
+  referrerUrl String?
+
+  contentCategory String?
+  contentName     String?
+  contentIds      String?
+  contentType     String?
+  contents        String?
+
+  deviceType       String?
+  documentEncoding String?
+  userAgent        String?
+  userLanguage     String?
+  load_time_ms     String?
+  screen_depth     String?
+  screen_height    String?
+  timezone_offset  String?
+
+  funnelSlug  String?
+  productSlug String?
+
+  userEmail String?
+  userPhone String?
+  userName  String?
+  ipAddress String?
+  cookieId  String?
+
+  currency String?
+  value    Float?
+
+  integration   Integration @relation(fields: [integrationId], references: [id], onDelete: Cascade)
+  integrationId String
+
+  webhookLog   WebhookLog? @relation(fields: [webhookLogId], references: [id], onDelete: Cascade)
+  webhookLogId String?
+
+  // Campos específicos do Facebook
+  fbc    String?
+  fbp    String?
+  fbclid String?
+
+  // Campos de envios para API
+  traceId String? // Facebook Pixel
 }

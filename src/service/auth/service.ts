@@ -1,61 +1,55 @@
-import { db } from "@/lib/db";
-import {
-  schemaAuthLogin,
-  schemaAuthLogout,
-  schemaAuthVerifyUserIdToken,
-} from "./schema";
-import { AuthLogout, AuthVerifyUserIdToken } from "./types";
-import { cookieDelete, cookieGet, cookieSet } from "@/helpers/cookie";
-import { jwtSign, jwtVerify } from "@/helpers/jwt";
-import { AuthLogin } from "./types";
-import { pwdVerify } from "@/helpers/pwd";
+'use server'
 
-export const serviceAuthLogin = async (params: AuthLogin): Promise<boolean> => {
-  const paramsValid = schemaAuthLogin.safeParse(params);
-  if (!paramsValid.success) return false;
-  const { email, password } = paramsValid.data;
+import { cookieDelete, cookieGet, cookieSet } from '@/helpers/cookie/helper'
+import { jwtSign, jwtVerify } from '@/helpers/jwt/helper'
+import { pwdVerify } from '@/helpers/pwd/helper'
+import { config } from '@/lib/config/config'
+import { db } from '@/lib/db/db'
+import { ResponsePromise } from '@/types'
 
-  const userDb = await db.user.findUnique({ where: { email } });
-  if (!userDb) return false;
+import { schemaAuthLogin } from './schema'
+import { AuthLogin } from './types'
 
-  const passwordValid = await pwdVerify(password, userDb.password);
-  if (!passwordValid) return false;
+const isProduction = process.env.NODE_ENV === 'production'
 
-  const token = jwtSign({ userId: userDb.id });
+export const serviceAuthLogin = async (params: AuthLogin): Promise<ResponsePromise> => {
+  const paramsValid = schemaAuthLogin.safeParse(params)
+  if (!paramsValid.success) return { success: false, error: 'validationError' }
+  const { email, password } = paramsValid.data
 
-  await cookieSet("token", token);
+  const userDb = await db.user.findUnique({ where: { email } })
+  if (!userDb) return { success: false, error: 'invalidCredentials' }
 
-  return true;
-};
+  const passwordValid = await pwdVerify(password, userDb.password)
+  if (!passwordValid) return { success: false, error: 'invalidCredentials' }
 
-export const serviceAuthLogout = async (
-  params: AuthLogout
-): Promise<boolean> => {
-  const paramsValid = schemaAuthLogout.safeParse(params);
-  if (!paramsValid.success) return false;
+  const token = jwtSign({ userId: userDb.id })
+  await cookieSet({
+    name: config.auth.tokenCookieName,
+    value: token,
+    options: { maxAge: 60 * 60 * 24 * 30, httpOnly: true, path: '/', secure: isProduction },
+  })
 
-  const token = await cookieGet("token");
-  if (!token) return false;
+  return { success: true }
+}
 
-  await cookieDelete("token");
+export const serviceAuthLogout = async (): Promise<ResponsePromise> => {
+  const token = await cookieGet({ name: config.auth.tokenCookieName })
+  if (!token) return { success: false, error: 'unauthorized' }
 
-  return true;
-};
+  await cookieDelete({ name: config.auth.tokenCookieName })
+  return { success: true }
+}
 
-export const serviceAuthVerifyUserIdToken = async (
-  params: AuthVerifyUserIdToken
-): Promise<boolean> => {
-  const paramsValid = schemaAuthVerifyUserIdToken.safeParse(params);
-  if (!paramsValid.success) return false;
+export const serviceAuthVerifyUserIdToken = async (): Promise<ResponsePromise> => {
+  const token = await cookieGet({ name: config.auth.tokenCookieName })
+  if (!token) return { success: false, error: 'unauthorized' }
 
-  const token = await cookieGet("token");
-  if (!token) return false;
+  const decoded = jwtVerify(token)
+  if (!decoded) return { success: false, error: 'unauthorized' }
 
-  const decoded = jwtVerify(token);
-  if (!decoded) return false;
+  const userDb = await db.user.findUnique({ where: { id: decoded.userId } })
+  if (!userDb) return { success: false, error: 'unauthorized' }
 
-  const userDb = await db.user.findUnique({ where: { id: decoded.userId } });
-  if (!userDb) return false;
-
-  return true;
-};
+  return { success: true }
+}
