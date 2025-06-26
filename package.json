@@ -19,8 +19,8 @@
     "docker:down": "docker-compose down",
     "docker:restart": "docker-compose restart",
     "docker:logs": "docker-compose logs -f postgres",
-    "docker:clean": "docker-compose down -v --remove-orphans"
-    "lint": "next lint"
+    "docker:clean": "docker-compose down -v --remove-orphans",
+    "check": "vitest --run"
   },
   "dependencies": {
     "@prisma/client": "^6.10.1",
@@ -33,6 +33,7 @@
     "prisma": "^6.10.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "sonner": "^2.0.5",
     "zod": "^3.25.67"
   },
   "devDependencies": {
@@ -48,8 +49,8 @@
     "eslint-config-next": "15.3.4",
     "jsdom": "^26.1.0",
     "tailwindcss": "^4",
-    "typescript": "^5",
-    "vitest": "^3.2.4",
     "tsx": "^4.20.3",
+    "typescript": "^5",
+    "vitest": "^3.2.4"
   }
 }
