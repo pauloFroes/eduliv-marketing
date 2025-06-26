@@ -5,15 +5,27 @@
 
 'use server'
 
-import { db } from '@/lib/db'
-import { schemaUserCreate, schemaUserGetByToken } from './schema'
-import { UserCreate, UserGetByToken } from './types'
-import { pwdCrypt } from '@/helpers/pwd'
-import { textFirstName } from '@/helpers/text'
-import { UserSession } from '../types'
 import { cookieGet } from '@/helpers/cookie'
 import { jwtVerify } from '@/helpers/jwt'
+import { pwdCrypt } from '@/helpers/pwd'
+import { textFirstName } from '@/helpers/text'
+import { db } from '@/lib/db'
 import { ErrorType } from '@/types'
+
+import { UserSession } from '../types'
+
+import { schemaUserCreate, schemaUserGetByToken } from './schema'
+import { UserCreate, UserGetByToken } from './types'
+
+/**
+ * Pendências do serviço de criação de usuário
+ *    - Validar privilégios de criação de usuário. Somente admin pode criar usuário
+ *  **/
+
+/**
+ * Pendências do serviço de criação de usuário
+ *    - Validar privilégios de criação de usuário. Somente admin pode criar usuário
+ *  **/
 
 const TOKEN_COOKIE_NAME = process.env.TOKEN_COOKIE_NAME
 if (!TOKEN_COOKIE_NAME) throw new Error('TOKEN_COOKIE_NAME is not set')

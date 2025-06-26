@@ -1,4 +1,5 @@
 import { toast } from 'sonner'
+
 import { ErrorType, ResponsePromise } from '@/types'
 
 interface FormToast<T> {

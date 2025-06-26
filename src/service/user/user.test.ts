@@ -11,8 +11,14 @@
  * - Casos de erro (usuário já existe, token inválido, etc.)
  * - Mocks de dependências externas
  */
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
+import { cookieGet } from '@/helpers/cookie'
+import { jwtVerify } from '@/helpers/jwt'
+import { pwdCrypt } from '@/helpers/pwd'
+import { textCapitalize, textFirstName } from '@/helpers/text'
+import { db } from '@/lib/db'
+
 import { serviceUserCreate, serviceUserGetByToken } from './service'
 import { UserCreate, UserGetByToken } from './types'
 
@@ -56,12 +62,6 @@ vi.mock('@/helpers/cookie', () => ({
 vi.mock('@/helpers/jwt', () => ({
   jwtVerify: vi.fn(),
 }))
-
-import { db } from '@/lib/db'
-import { pwdCrypt } from '@/helpers/pwd'
-import { textFirstName, textCapitalize } from '@/helpers/text'
-import { cookieGet } from '@/helpers/cookie'
-import { jwtVerify } from '@/helpers/jwt'
 
 // Adiciona mock global para textCapitalize
 vi.mocked(textCapitalize).mockImplementation((name: string) =>

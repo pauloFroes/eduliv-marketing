@@ -8,7 +8,12 @@
     "start": "next start",
     "setup": "npm install && cp env.example .env && docker-compose up -d && sleep 15 && npx tsx prisma/seed.ts",
     "prisma:update": "npx prisma generate && npx prisma migrate dev",
-    "check": "tsc && eslint . --ext .ts,.tsx && vitest run"
+    "check": "tsc && eslint . --ext .ts,.tsx && vitest run",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "eslint . --ext .ts,.tsx --fix",
+    "lint:check": "eslint . --ext .ts,.tsx",
+    "organize-imports": "prettier --write . && eslint . --ext .ts,.tsx --fix"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.1.1",
@@ -43,9 +48,13 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@typescript-eslint/eslint-plugin": "^8.35.0",
+    "@typescript-eslint/parser": "^8.35.0",
     "@vitest/ui": "^3.2.4",
     "eslint": "^9",
     "eslint-config-next": "15.3.4",
+    "eslint-import-resolver-typescript": "^4.4.4",
+    "eslint-plugin-import": "^2.32.0",
     "jsdom": "^26.1.0",
     "prettier": "^3.6.1",
     "tailwindcss": "^4",

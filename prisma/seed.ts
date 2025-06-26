@@ -1,7 +1,9 @@
+import dotenv from 'dotenv'
+
 import { db } from '@/lib/db'
+
 import { pwdCrypt } from '../src/helpers/pwd'
 import { textFirstName } from '../src/helpers/text'
-import dotenv from 'dotenv'
 
 // Carrega as variáveis de ambiente
 dotenv.config()

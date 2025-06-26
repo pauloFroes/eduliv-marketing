@@ -1,8 +1,15 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+
+import { cookieDelete, cookieGet, cookieSet } from '@/helpers/cookie'
+import { jwtSign, jwtVerify } from '@/helpers/jwt'
+import { pwdVerify } from '@/helpers/pwd'
+import { db } from '@/lib/db'
+import { ErrorType, ResponsePromise } from '@/types'
+
+import { User } from '../../../prisma/generated'
+
 import { serviceAuthLogin, serviceAuthLogout, serviceAuthVerifyUserIdToken } from './service'
 import { AuthLogin } from './types'
-import { ResponsePromise, ErrorType } from '@/types'
-import { User } from '../../../prisma/generated'
 
 // Mocks das dependências
 vi.mock('@/lib/db', () => ({
@@ -27,11 +34,6 @@ vi.mock('@/helpers/jwt', () => ({
   jwtSign: vi.fn(),
   jwtVerify: vi.fn(),
 }))
-
-import { db } from '@/lib/db'
-import { pwdVerify } from '@/helpers/pwd'
-import { cookieGet, cookieSet, cookieDelete } from '@/helpers/cookie'
-import { jwtSign, jwtVerify } from '@/helpers/jwt'
 
 // Type guard para verificar se é um erro
 const isError = (result: ResponsePromise): result is { success: false; error: ErrorType } => {
