@@ -6,7 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 
 import { Form, FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form'
-import { formToast } from '@/helpers/form/helper'
+import { formToast } from '@/helpers/form/form'
 import { schemaAuthLogin } from '@/service/auth/schema'
 import { serviceAuthLogin } from '@/service/auth/service'
 import { AuthLogin } from '@/service/auth/types'

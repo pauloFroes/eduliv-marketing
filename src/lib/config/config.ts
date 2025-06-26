@@ -1,6 +1,5 @@
 import { AppConfig } from './types'
 
-// Configurações centralizadas da aplicação
 export const config: AppConfig = {
   auth: {
     tokenCookieName: process.env.TOKEN_COOKIE_NAME || '_edu_token',

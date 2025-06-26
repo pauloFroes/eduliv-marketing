@@ -13,10 +13,10 @@
  */
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { cookieGet } from '@/helpers/cookie/helper'
-import { jwtVerify } from '@/helpers/jwt/helper'
-import { pwdCrypt } from '@/helpers/pwd/helper'
-import { textCapitalize, textFirstName } from '@/helpers/text/helper'
+import { cookieGet } from '@/helpers/cookie/cookie'
+import { jwtVerify } from '@/helpers/jwt/form'
+import { pwdCrypt } from '@/helpers/pwd/form'
+import { textCapitalize, textFirstName } from '@/helpers/text/form'
 import { config } from '@/lib/config/config'
 import { db } from '@/lib/db/db'
 
@@ -47,20 +47,20 @@ vi.mock('@/lib/db/db', () => ({
   },
 }))
 
-vi.mock('@/helpers/pwd/helper', () => ({
+vi.mock('@/helpers/pwd/form', () => ({
   pwdCrypt: vi.fn(),
 }))
 
-vi.mock('@/helpers/text/helper', () => ({
+vi.mock('@/helpers/text/form', () => ({
   textFirstName: vi.fn(),
   textCapitalize: vi.fn(),
 }))
 
-vi.mock('@/helpers/cookie/helper', () => ({
+vi.mock('@/helpers/cookie/cookie', () => ({
   cookieGet: vi.fn(),
 }))
 
-vi.mock('@/helpers/jwt/helper', () => ({
+vi.mock('@/helpers/jwt/form', () => ({
   jwtVerify: vi.fn(),
 }))
 

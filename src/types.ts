@@ -1,17 +1,6 @@
-export type ErrorType =
-  | 'VALIDATION_ERROR'
-  | 'UNAUTHORIZED'
-  | 'NOT_FOUND'
-  | 'INTERNAL_ERROR'
-  | 'NETWORK_ERROR'
-  | 'UNKNOWN_ERROR'
-  | 'invalidCredentials'
-  | 'alreadyExists'
-  | 'validationError'
-  | 'internalError'
-  | 'unauthorized'
+export type ErrorType = 'invalidCredentials' | 'alreadyExists' | 'validationError' | 'internalError' | 'unauthorized'
 
-export interface ResponsePromise<T> {
+export interface ResponsePromise<T = undefined> {
   success: boolean
   data?: T
   error?: ErrorType

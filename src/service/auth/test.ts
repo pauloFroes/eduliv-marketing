@@ -1,8 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { cookieDelete, cookieGet, cookieSet } from '@/helpers/cookie/helper'
-import { jwtSign, jwtVerify } from '@/helpers/jwt/helper'
-import { pwdVerify } from '@/helpers/pwd/helper'
+import { cookieDelete, cookieGet, cookieSet } from '@/helpers/cookie/cookie'
+import { jwtSign, jwtVerify } from '@/helpers/jwt/form'
+import { pwdVerify } from '@/helpers/pwd/form'
 import { config } from '@/lib/config/config'
 import { db } from '@/lib/db/db'
 import { ErrorType, ResponsePromise } from '@/types'
@@ -21,17 +21,17 @@ vi.mock('@/lib/db/db', () => ({
   },
 }))
 
-vi.mock('@/helpers/pwd/helper', () => ({
+vi.mock('@/helpers/pwd/form', () => ({
   pwdVerify: vi.fn(),
 }))
 
-vi.mock('@/helpers/cookie/helper', () => ({
+vi.mock('@/helpers/cookie/cookie', () => ({
   cookieGet: vi.fn(),
   cookieSet: vi.fn(),
   cookieDelete: vi.fn(),
 }))
 
-vi.mock('@/helpers/jwt/helper', () => ({
+vi.mock('@/helpers/jwt/form', () => ({
   jwtSign: vi.fn(),
   jwtVerify: vi.fn(),
 }))
