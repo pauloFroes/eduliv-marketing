@@ -3,6 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { cookieDelete, cookieGet, cookieSet } from '@/helpers/cookie'
 import { jwtSign, jwtVerify } from '@/helpers/jwt'
 import { pwdVerify } from '@/helpers/pwd'
+import { config } from '@/lib/config'
 import { db } from '@/lib/db'
 import { ErrorType, ResponsePromise } from '@/types'
 
@@ -85,7 +86,7 @@ describe('Service Auth', () => {
       expect(pwdVerify).toHaveBeenCalledWith(validLoginData.password, mockUser.password)
       expect(jwtSign).toHaveBeenCalledWith({ userId: mockUser.id })
       expect(cookieSet).toHaveBeenCalledWith({
-        name: 'token',
+        name: config.auth.tokenCookieName,
         value: mockToken,
         options: { maxAge: 60 * 60 * 24 * 30, httpOnly: true, path: '/', secure: false },
       })
@@ -231,8 +232,8 @@ describe('Service Auth', () => {
 
       // Assert
       expect(result.success).toBe(true)
-      expect(cookieGet).toHaveBeenCalledWith({ name: 'token' })
-      expect(cookieDelete).toHaveBeenCalledWith({ name: 'token' })
+      expect(cookieGet).toHaveBeenCalledWith({ name: config.auth.tokenCookieName })
+      expect(cookieDelete).toHaveBeenCalledWith({ name: config.auth.tokenCookieName })
     })
 
     it('deve retornar false quando não há token', async () => {
@@ -247,7 +248,7 @@ describe('Service Auth', () => {
       if (isError(result)) {
         expect(result.error).toBe('unauthorized')
       }
-      expect(cookieGet).toHaveBeenCalledWith({ name: 'token' })
+      expect(cookieGet).toHaveBeenCalledWith({ name: config.auth.tokenCookieName })
       expect(cookieDelete).not.toHaveBeenCalled()
     })
 
@@ -263,7 +264,7 @@ describe('Service Auth', () => {
       if (isError(result)) {
         expect(result.error).toBe('unauthorized')
       }
-      expect(cookieGet).toHaveBeenCalledWith({ name: 'token' })
+      expect(cookieGet).toHaveBeenCalledWith({ name: config.auth.tokenCookieName })
       expect(cookieDelete).not.toHaveBeenCalled()
     })
   })
@@ -293,7 +294,7 @@ describe('Service Auth', () => {
 
       // Assert
       expect(result.success).toBe(true)
-      expect(cookieGet).toHaveBeenCalledWith({ name: 'token' })
+      expect(cookieGet).toHaveBeenCalledWith({ name: config.auth.tokenCookieName })
       expect(jwtVerify).toHaveBeenCalledWith(mockToken)
       expect(db.user.findUnique).toHaveBeenCalledWith({
         where: { id: mockDecoded.userId },
@@ -312,7 +313,7 @@ describe('Service Auth', () => {
       if (isError(result)) {
         expect(result.error).toBe('unauthorized')
       }
-      expect(cookieGet).toHaveBeenCalledWith({ name: 'token' })
+      expect(cookieGet).toHaveBeenCalledWith({ name: config.auth.tokenCookieName })
       expect(jwtVerify).not.toHaveBeenCalled()
       expect(db.user.findUnique).not.toHaveBeenCalled()
     })
@@ -329,7 +330,7 @@ describe('Service Auth', () => {
       if (isError(result)) {
         expect(result.error).toBe('unauthorized')
       }
-      expect(cookieGet).toHaveBeenCalledWith({ name: 'token' })
+      expect(cookieGet).toHaveBeenCalledWith({ name: config.auth.tokenCookieName })
       expect(jwtVerify).not.toHaveBeenCalled()
       expect(db.user.findUnique).not.toHaveBeenCalled()
     })
@@ -349,7 +350,7 @@ describe('Service Auth', () => {
       if (isError(result)) {
         expect(result.error).toBe('unauthorized')
       }
-      expect(cookieGet).toHaveBeenCalledWith({ name: 'token' })
+      expect(cookieGet).toHaveBeenCalledWith({ name: config.auth.tokenCookieName })
       expect(jwtVerify).toHaveBeenCalledWith(mockToken)
       expect(db.user.findUnique).not.toHaveBeenCalled()
     })
@@ -371,7 +372,7 @@ describe('Service Auth', () => {
       if (isError(result)) {
         expect(result.error).toBe('unauthorized')
       }
-      expect(cookieGet).toHaveBeenCalledWith({ name: 'token' })
+      expect(cookieGet).toHaveBeenCalledWith({ name: config.auth.tokenCookieName })
       expect(jwtVerify).toHaveBeenCalledWith(mockToken)
       expect(db.user.findUnique).toHaveBeenCalledWith({
         where: { id: mockDecoded.userId },

@@ -24,3 +24,18 @@ vi.mock('next/navigation', () => ({
     refresh: vi.fn(),
   })),
 }))
+
+// Mock da configuração centralizada para testes
+vi.mock('@/lib/config', () => ({
+  config: {
+    auth: {
+      tokenCookieName: 'token',
+      jwtSecret: 'test-secret-key',
+      jwtExpiresIn: 3600,
+      bcryptCost: 1,
+    },
+    database: {
+      url: 'test-database-url',
+    },
+  },
+}))

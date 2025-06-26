@@ -17,6 +17,7 @@ import { cookieGet } from '@/helpers/cookie'
 import { jwtVerify } from '@/helpers/jwt'
 import { pwdCrypt } from '@/helpers/pwd'
 import { textCapitalize, textFirstName } from '@/helpers/text'
+import { config } from '@/lib/config'
 import { db } from '@/lib/db'
 
 import { serviceUserCreate, serviceUserGetByToken } from './service'
@@ -310,7 +311,7 @@ describe('Service User', () => {
         displayName: mockUser.displayName,
         phone: mockUser.phone,
       })
-      expect(cookieGet).toHaveBeenCalledWith({ name: 'token' })
+      expect(cookieGet).toHaveBeenCalledWith({ name: config.auth.tokenCookieName })
       expect(jwtVerify).toHaveBeenCalledWith(mockToken)
       expect(db.user.findUnique).toHaveBeenCalledWith({
         where: { id: mockDecoded.userId },
@@ -354,7 +355,7 @@ describe('Service User', () => {
 
       // Assert
       expect(result).toBe(false)
-      expect(cookieGet).toHaveBeenCalledWith({ name: 'token' })
+      expect(cookieGet).toHaveBeenCalledWith({ name: config.auth.tokenCookieName })
       expect(jwtVerify).not.toHaveBeenCalled()
       expect(db.user.findUnique).not.toHaveBeenCalled()
     })
@@ -371,7 +372,7 @@ describe('Service User', () => {
 
       // Assert
       expect(result).toBe(false)
-      expect(cookieGet).toHaveBeenCalledWith({ name: 'token' })
+      expect(cookieGet).toHaveBeenCalledWith({ name: config.auth.tokenCookieName })
       expect(jwtVerify).toHaveBeenCalledWith(mockToken)
       expect(db.user.findUnique).not.toHaveBeenCalled()
     })
