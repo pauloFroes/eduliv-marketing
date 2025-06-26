@@ -6,9 +6,9 @@
 'use server'
 
 import { cookieGet } from '@/helpers/cookie/cookie'
-import { jwtVerify } from '@/helpers/jwt/form'
-import { pwdCrypt } from '@/helpers/pwd/form'
-import { textFirstName } from '@/helpers/text/form'
+import { cryptHash } from '@/helpers/crypt/crypt'
+import { jwtVerify } from '@/helpers/jwt/jwt'
+import { textFirstName } from '@/helpers/text/text'
 import { config } from '@/lib/config/config'
 import { db } from '@/lib/db/db'
 import { ErrorType } from '@/types'
@@ -17,16 +17,6 @@ import { UserSession } from '../types'
 
 import { schemaUserCreate, schemaUserGetByToken } from './schema'
 import { UserCreate, UserGetByToken } from './types'
-
-/**
- * Pendências do serviço de criação de usuário
- *    - Validar privilégios de criação de usuário. Somente admin pode criar usuário
- *  **/
-
-/**
- * Pendências do serviço de criação de usuário
- *    - Validar privilégios de criação de usuário. Somente admin pode criar usuário
- *  **/
 
 export const serviceUserCreate = async (params: UserCreate): Promise<boolean | ErrorType> => {
   const paramsValid = schemaUserCreate.safeParse(params)
@@ -37,7 +27,7 @@ export const serviceUserCreate = async (params: UserCreate): Promise<boolean | E
   const userDb = await db.user.findUnique({ where: { email } })
   if (userDb) return 'alreadyExists'
 
-  const passwordCrypt = await pwdCrypt(password)
+  const passwordCrypt = await cryptHash(password)
   const displayName = textFirstName(fullName)
 
   const userDbCreated = await db.user.create({

@@ -1,8 +1,8 @@
 'use server'
 
 import { cookieDelete, cookieGet, cookieSet } from '@/helpers/cookie/cookie'
-import { jwtSign, jwtVerify } from '@/helpers/jwt/form'
-import { pwdVerify } from '@/helpers/pwd/form'
+import { cryptVerify } from '@/helpers/crypt/crypt'
+import { jwtSign, jwtVerify } from '@/helpers/jwt/jwt'
 import { config } from '@/lib/config/config'
 import { db } from '@/lib/db/db'
 import { ResponsePromise } from '@/types'
@@ -20,7 +20,7 @@ export const serviceAuthLogin = async (params: AuthLogin): Promise<ResponsePromi
   const userDb = await db.user.findUnique({ where: { email } })
   if (!userDb) return { success: false, error: 'invalidCredentials' }
 
-  const passwordValid = await pwdVerify(password, userDb.password)
+  const passwordValid = await cryptVerify(password, userDb.password)
   if (!passwordValid) return { success: false, error: 'invalidCredentials' }
 
   const token = jwtSign({ userId: userDb.id })

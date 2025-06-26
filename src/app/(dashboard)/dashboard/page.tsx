@@ -1,9 +1,9 @@
-import { Button } from '@/components/ui/button'
+import { AuthLogout } from '@/components/auth/logout'
 
 export default function DashboardPage() {
   return (
     <div className='flex flex-col items-center justify-center h-screen'>
-      <Button>Sair</Button>
+      <AuthLogout title='Sair' />
     </div>
   )
 }

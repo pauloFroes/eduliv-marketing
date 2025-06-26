@@ -7,14 +7,14 @@ import { useForm } from 'react-hook-form'
 
 import { Form, FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form'
 import { formToast } from '@/helpers/form/form'
-import { schemaAuthLogin } from '@/service/auth/schema'
-import { serviceAuthLogin } from '@/service/auth/service'
-import { AuthLogin } from '@/service/auth/types'
+import { schemaAuthLogin } from '@/services/auth/schema'
+import { serviceAuthLogin } from '@/services/auth/service'
+import { AuthLogin } from '@/services/auth/types'
 
-import { Button } from '../ui/button'
-import { Input } from '../ui/input'
+import { Button } from '../../ui/button'
+import { Input } from '../../ui/input'
 
-export const FormAuthLogin = () => {
+export const AuthFormLogin = () => {
   const router = useRouter()
 
   const onSubmit = async (formData: AuthLogin) => {

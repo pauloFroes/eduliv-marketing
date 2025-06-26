@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-import { textCapitalize } from '@/helpers/text/form'
+import { textCapitalize } from '@/helpers/text/text'
 
 export const schemaUserEmail = z
   .string()

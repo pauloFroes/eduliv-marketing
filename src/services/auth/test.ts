@@ -1,8 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { cookieDelete, cookieGet, cookieSet } from '@/helpers/cookie/cookie'
-import { jwtSign, jwtVerify } from '@/helpers/jwt/form'
-import { pwdVerify } from '@/helpers/pwd/form'
+import { cryptVerify } from '@/helpers/crypt/crypt'
+import { jwtSign, jwtVerify } from '@/helpers/jwt/jwt'
 import { config } from '@/lib/config/config'
 import { db } from '@/lib/db/db'
 import { ErrorType, ResponsePromise } from '@/types'
@@ -21,8 +21,8 @@ vi.mock('@/lib/db/db', () => ({
   },
 }))
 
-vi.mock('@/helpers/pwd/form', () => ({
-  pwdVerify: vi.fn(),
+vi.mock('@/helpers/crypt/crypt', () => ({
+  cryptVerify: vi.fn(),
 }))
 
 vi.mock('@/helpers/cookie/cookie', () => ({
@@ -31,7 +31,7 @@ vi.mock('@/helpers/cookie/cookie', () => ({
   cookieDelete: vi.fn(),
 }))
 
-vi.mock('@/helpers/jwt/form', () => ({
+vi.mock('@/helpers/jwt/jwt', () => ({
   jwtSign: vi.fn(),
   jwtVerify: vi.fn(),
 }))
@@ -71,7 +71,7 @@ describe('Service Auth', () => {
       const mockToken = 'jwt-token-generated'
 
       vi.mocked(db.user.findUnique).mockResolvedValue(mockUser as User)
-      vi.mocked(pwdVerify).mockResolvedValue(true)
+      vi.mocked(cryptVerify).mockResolvedValue(true)
       vi.mocked(jwtSign).mockReturnValue(mockToken)
       vi.mocked(cookieSet).mockResolvedValue(undefined)
 
@@ -83,7 +83,7 @@ describe('Service Auth', () => {
       expect(db.user.findUnique).toHaveBeenCalledWith({
         where: { email: validLoginData.email },
       })
-      expect(pwdVerify).toHaveBeenCalledWith(validLoginData.password, mockUser.password)
+      expect(cryptVerify).toHaveBeenCalledWith(validLoginData.password, mockUser.password)
       expect(jwtSign).toHaveBeenCalledWith({ userId: mockUser.id })
       expect(cookieSet).toHaveBeenCalledWith({
         name: config.auth.tokenCookieName,
@@ -108,7 +108,7 @@ describe('Service Auth', () => {
         expect(result.error).toBe('validationError')
       }
       expect(db.user.findUnique).not.toHaveBeenCalled()
-      expect(pwdVerify).not.toHaveBeenCalled()
+      expect(cryptVerify).not.toHaveBeenCalled()
       expect(jwtSign).not.toHaveBeenCalled()
       expect(cookieSet).not.toHaveBeenCalled()
     })
@@ -146,7 +146,7 @@ describe('Service Auth', () => {
       expect(db.user.findUnique).toHaveBeenCalledWith({
         where: { email: validLoginData.email },
       })
-      expect(pwdVerify).not.toHaveBeenCalled()
+      expect(cryptVerify).not.toHaveBeenCalled()
       expect(jwtSign).not.toHaveBeenCalled()
       expect(cookieSet).not.toHaveBeenCalled()
     })
@@ -165,7 +165,7 @@ describe('Service Auth', () => {
       }
 
       vi.mocked(db.user.findUnique).mockResolvedValue(mockUser as User)
-      vi.mocked(pwdVerify).mockResolvedValue(false)
+      vi.mocked(cryptVerify).mockResolvedValue(false)
 
       // Act
       const result = await serviceAuthLogin(validLoginData)
@@ -178,7 +178,7 @@ describe('Service Auth', () => {
       expect(db.user.findUnique).toHaveBeenCalledWith({
         where: { email: validLoginData.email },
       })
-      expect(pwdVerify).toHaveBeenCalledWith(validLoginData.password, mockUser.password)
+      expect(cryptVerify).toHaveBeenCalledWith(validLoginData.password, mockUser.password)
       expect(jwtSign).not.toHaveBeenCalled()
       expect(cookieSet).not.toHaveBeenCalled()
     })
@@ -203,7 +203,7 @@ describe('Service Auth', () => {
       const mockToken = 'jwt-token-generated'
 
       vi.mocked(db.user.findUnique).mockResolvedValue(mockUser as User)
-      vi.mocked(pwdVerify).mockResolvedValue(true)
+      vi.mocked(cryptVerify).mockResolvedValue(true)
       vi.mocked(jwtSign).mockReturnValue(mockToken)
       vi.mocked(cookieSet).mockResolvedValue(undefined)
 
@@ -215,7 +215,7 @@ describe('Service Auth', () => {
       expect(db.user.findUnique).toHaveBeenCalledWith({
         where: { email: 'teste@exemplo.com' },
       })
-      expect(pwdVerify).toHaveBeenCalledWith('senha123456', mockUser.password)
+      expect(cryptVerify).toHaveBeenCalledWith('senha123456', mockUser.password)
     })
   })
 

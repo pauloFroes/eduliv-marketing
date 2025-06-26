@@ -2,8 +2,8 @@ import dotenv from 'dotenv'
 
 import { db } from '@/lib/db/db'
 
-import { pwdCrypt } from '../src/helpers/pwd/form'
-import { textFirstName } from '../src/helpers/text/form'
+import { cryptHash } from '../src/helpers/crypt/crypt'
+import { textFirstName } from '../src/helpers/text/text'
 
 // Carrega as variáveis de ambiente
 dotenv.config()
@@ -34,7 +34,7 @@ async function main() {
 
     console.log('👤 Criando usuário administrador...')
 
-    const passwordCrypt = await pwdCrypt(seedUser.password)
+    const passwordCrypt = await cryptHash(seedUser.password)
     const displayName = textFirstName(seedUser.fullName)
 
     const user = await db.user.create({

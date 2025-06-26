@@ -14,9 +14,9 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { cookieGet } from '@/helpers/cookie/cookie'
-import { jwtVerify } from '@/helpers/jwt/form'
-import { pwdCrypt } from '@/helpers/pwd/form'
-import { textCapitalize, textFirstName } from '@/helpers/text/form'
+import { cryptHash } from '@/helpers/crypt/crypt'
+import { jwtVerify } from '@/helpers/jwt/jwt'
+import { textCapitalize, textFirstName } from '@/helpers/text/text'
 import { config } from '@/lib/config/config'
 import { db } from '@/lib/db/db'
 
@@ -64,9 +64,26 @@ vi.mock('@/helpers/jwt/form', () => ({
   jwtVerify: vi.fn(),
 }))
 
+vi.mock('@/helpers/crypt/crypt', () => ({
+  cryptHash: vi.fn(),
+}))
+
+vi.mock('@/helpers/text/text', () => ({
+  textFirstName: vi.fn(),
+  textCapitalize: vi.fn(),
+}))
+
+vi.mock('@/helpers/cookie/cookie', () => ({
+  cookieGet: vi.fn(),
+}))
+
+vi.mock('@/helpers/jwt/jwt', () => ({
+  jwtVerify: vi.fn(),
+}))
+
 // Adiciona mock global para textCapitalize
 vi.mocked(textCapitalize).mockImplementation((name: string) =>
-  name
+  (name as string)
     .trim()
     .replace(/\s+/g, ' ')
     .split(' ')
@@ -109,7 +126,7 @@ describe('Service User', () => {
       }
 
       vi.mocked(db.user.findUnique).mockResolvedValue(null)
-      vi.mocked(pwdCrypt).mockResolvedValue('hashedPassword')
+      vi.mocked(cryptHash).mockResolvedValue('hashedPassword')
       vi.mocked(textFirstName).mockReturnValue('João')
       vi.mocked(db.user.create).mockResolvedValue(mockUser as MockUser)
 
@@ -121,7 +138,7 @@ describe('Service User', () => {
       expect(db.user.findUnique).toHaveBeenCalledWith({
         where: { email: validUserData.email },
       })
-      expect(pwdCrypt).toHaveBeenCalledWith(validUserData.password)
+      expect(cryptHash).toHaveBeenCalledWith(validUserData.password)
       expect(textFirstName).toHaveBeenCalledWith('João Silva Santos')
       expect(db.user.create).toHaveBeenCalledWith({
         data: {
@@ -156,7 +173,7 @@ describe('Service User', () => {
       expect(db.user.findUnique).toHaveBeenCalledWith({
         where: { email: validUserData.email },
       })
-      expect(pwdCrypt).not.toHaveBeenCalled()
+      expect(cryptHash).not.toHaveBeenCalled()
       expect(db.user.create).not.toHaveBeenCalled()
     })
 
@@ -223,7 +240,7 @@ describe('Service User', () => {
     it('deve retornar false quando a criação do usuário no banco falha', async () => {
       // Arrange
       vi.mocked(db.user.findUnique).mockResolvedValue(null)
-      vi.mocked(pwdCrypt).mockResolvedValue('hashedPassword')
+      vi.mocked(cryptHash).mockResolvedValue('hashedPassword')
       vi.mocked(textFirstName).mockReturnValue('João')
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       vi.mocked(db.user.create).mockResolvedValue(null as any)
@@ -258,7 +275,7 @@ describe('Service User', () => {
       // Mocka o valor esperado para o nome capitalizado
       vi.mocked(textCapitalize).mockReturnValue('João Silva Santos')
       vi.mocked(db.user.findUnique).mockResolvedValue(null)
-      vi.mocked(pwdCrypt).mockResolvedValue('hashedPassword')
+      vi.mocked(cryptHash).mockResolvedValue('hashedPassword')
       vi.mocked(textFirstName).mockReturnValue('João')
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       vi.mocked(db.user.create).mockResolvedValue(mockUser as any)

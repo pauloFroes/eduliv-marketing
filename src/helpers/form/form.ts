@@ -9,7 +9,7 @@ export const formToast = <T>({
   loading,
   success,
   errorMap,
-  actionOnSuccess = () => {},
+  actionOnSuccess = async () => {},
 }: FormToast<T>): Promise<T> => {
   return new Promise<T>((resolve, reject) => {
     toast.promise(

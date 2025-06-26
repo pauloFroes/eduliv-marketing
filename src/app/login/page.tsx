@@ -1,4 +1,4 @@
-import { FormAuthLogin } from '@/components/form/auth'
+import { AuthFormLogin } from '@/components/auth/form/login'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 
 export default function LoginPage() {
@@ -10,7 +10,7 @@ export default function LoginPage() {
           <CardDescription className='text-center'>Acesse sua conta para continuar</CardDescription>
         </CardHeader>
         <CardContent>
-          <FormAuthLogin />
+          <AuthFormLogin />
         </CardContent>
       </Card>
     </div>
