@@ -6,18 +6,26 @@ import { schemaAuthLogin } from '@/service/auth/schema'
 import { serviceAuthLogin } from '@/service/auth/service'
 import { AuthLogin } from '@/service/auth/types'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { Button } from '../ui/button'
 import { Input } from '../ui/input'
 
 export const FormAuthLogin = () => {
+  const router = useRouter()
+
   const onSubmit = async (formData: AuthLogin) => {
-    await formToast({
-      promise: serviceAuthLogin(formData),
-      loading: 'Efetuando login...',
-      success: 'Login realizado com sucesso!',
-      errorMap: { invalidCredentials: 'E-mail ou senha inválidos.' },
-    })
+    try {
+      await formToast({
+        promise: serviceAuthLogin(formData),
+        loading: 'Efetuando login...',
+        success: 'Login realizado com sucesso!',
+        errorMap: { invalidCredentials: 'E-mail ou senha inválidos.' },
+        actionOnSuccess: () => router.push('/dashboard'),
+      })
+    } catch {
+      return
+    }
   }
 
   const form = useForm<AuthLogin>({

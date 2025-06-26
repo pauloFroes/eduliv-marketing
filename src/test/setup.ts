@@ -6,9 +6,21 @@ Object.assign(process.env, {
   BCRYPT_COST: '1',
   JWT_SECRET: 'test-secret-key',
   JWT_EXPIRES_IN: '3600',
+  TOKEN_COOKIE_NAME: 'token',
 })
 
 // Mock das dependências do Next.js
 vi.mock('next/headers', () => ({
   cookies: vi.fn(),
+}))
+
+// Mock do next/navigation
+vi.mock('next/navigation', () => ({
+  useRouter: vi.fn(() => ({
+    push: vi.fn(),
+    replace: vi.fn(),
+    back: vi.fn(),
+    forward: vi.fn(),
+    refresh: vi.fn(),
+  })),
 }))

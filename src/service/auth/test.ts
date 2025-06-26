@@ -1,9 +1,8 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { serviceAuthLogin, serviceAuthLogout, serviceAuthVerifyUserIdToken } from './service'
-import { AuthLogin, AuthLogout, AuthVerifyUserIdToken } from './types'
-import { ResponseType, ErrorType } from '@/types'
+import { AuthLogin } from './types'
+import { ResponsePromise, ErrorType } from '@/types'
+import { User } from '../../../prisma/generated'
 
 // Mocks das dependências
 vi.mock('@/lib/db', () => ({
@@ -35,7 +34,7 @@ import { cookieGet, cookieSet, cookieDelete } from '@/helpers/cookie'
 import { jwtSign, jwtVerify } from '@/helpers/jwt'
 
 // Type guard para verificar se é um erro
-const isError = (result: ResponseType): result is { success: false; error: ErrorType } => {
+const isError = (result: ResponsePromise): result is { success: false; error: ErrorType } => {
   return !result.success
 }
 
@@ -68,7 +67,7 @@ describe('Service Auth', () => {
       }
       const mockToken = 'jwt-token-generated'
 
-      vi.mocked(db.user.findUnique).mockResolvedValue(mockUser as any)
+      vi.mocked(db.user.findUnique).mockResolvedValue(mockUser as User)
       vi.mocked(pwdVerify).mockResolvedValue(true)
       vi.mocked(jwtSign).mockReturnValue(mockToken)
       vi.mocked(cookieSet).mockResolvedValue(undefined)
@@ -162,7 +161,7 @@ describe('Service Auth', () => {
         updatedAt: new Date(),
       }
 
-      vi.mocked(db.user.findUnique).mockResolvedValue(mockUser as any)
+      vi.mocked(db.user.findUnique).mockResolvedValue(mockUser as User)
       vi.mocked(pwdVerify).mockResolvedValue(false)
 
       // Act
@@ -200,7 +199,7 @@ describe('Service Auth', () => {
       }
       const mockToken = 'jwt-token-generated'
 
-      vi.mocked(db.user.findUnique).mockResolvedValue(mockUser as any)
+      vi.mocked(db.user.findUnique).mockResolvedValue(mockUser as User)
       vi.mocked(pwdVerify).mockResolvedValue(true)
       vi.mocked(jwtSign).mockReturnValue(mockToken)
       vi.mocked(cookieSet).mockResolvedValue(undefined)
@@ -218,8 +217,6 @@ describe('Service Auth', () => {
   })
 
   describe('serviceAuthLogout', () => {
-    const validLogoutData: AuthLogout = undefined
-
     it('deve fazer logout com sucesso', async () => {
       // Arrange
       const mockToken = 'existing-jwt-token'
@@ -228,7 +225,7 @@ describe('Service Auth', () => {
       vi.mocked(cookieDelete).mockResolvedValue(undefined)
 
       // Act
-      const result = await serviceAuthLogout(validLogoutData)
+      const result = await serviceAuthLogout()
 
       // Assert
       expect(result.success).toBe(true)
@@ -241,7 +238,7 @@ describe('Service Auth', () => {
       vi.mocked(cookieGet).mockResolvedValue(undefined)
 
       // Act
-      const result = await serviceAuthLogout(validLogoutData)
+      const result = await serviceAuthLogout()
 
       // Assert
       expect(result.success).toBe(false)
@@ -257,7 +254,7 @@ describe('Service Auth', () => {
       vi.mocked(cookieGet).mockResolvedValue('')
 
       // Act
-      const result = await serviceAuthLogout(validLogoutData)
+      const result = await serviceAuthLogout()
 
       // Assert
       expect(result.success).toBe(false)
@@ -267,27 +264,9 @@ describe('Service Auth', () => {
       expect(cookieGet).toHaveBeenCalledWith({ name: 'token' })
       expect(cookieDelete).not.toHaveBeenCalled()
     })
-
-    it('deve retornar false quando a validação dos parâmetros falha', async () => {
-      // Arrange - Simulando parâmetros inválidos
-      // Como o schema é z.undefined(), qualquer valor diferente de undefined falhará
-      const invalidParams = { invalidProp: 'test' } as any
-
-      // Act
-      const result = await serviceAuthLogout(invalidParams)
-
-      // Assert
-      expect(result.success).toBe(false)
-      if (isError(result)) {
-        expect(result.error).toBe('validationError')
-      }
-      expect(cookieGet).not.toHaveBeenCalled()
-    })
   })
 
   describe('serviceAuthVerifyUserIdToken', () => {
-    const validVerifyData: AuthVerifyUserIdToken = undefined
-
     it('deve verificar token com sucesso', async () => {
       // Arrange
       const mockToken = 'valid-jwt-token'
@@ -305,10 +284,10 @@ describe('Service Auth', () => {
 
       vi.mocked(cookieGet).mockResolvedValue(mockToken)
       vi.mocked(jwtVerify).mockReturnValue(mockDecoded)
-      vi.mocked(db.user.findUnique).mockResolvedValue(mockUser as any)
+      vi.mocked(db.user.findUnique).mockResolvedValue(mockUser as User)
 
       // Act
-      const result = await serviceAuthVerifyUserIdToken(validVerifyData)
+      const result = await serviceAuthVerifyUserIdToken()
 
       // Assert
       expect(result.success).toBe(true)
@@ -324,7 +303,7 @@ describe('Service Auth', () => {
       vi.mocked(cookieGet).mockResolvedValue(undefined)
 
       // Act
-      const result = await serviceAuthVerifyUserIdToken(validVerifyData)
+      const result = await serviceAuthVerifyUserIdToken()
 
       // Assert
       expect(result.success).toBe(false)
@@ -341,7 +320,7 @@ describe('Service Auth', () => {
       vi.mocked(cookieGet).mockResolvedValue('')
 
       // Act
-      const result = await serviceAuthVerifyUserIdToken(validVerifyData)
+      const result = await serviceAuthVerifyUserIdToken()
 
       // Assert
       expect(result.success).toBe(false)
@@ -361,7 +340,7 @@ describe('Service Auth', () => {
       vi.mocked(jwtVerify).mockReturnValue(null)
 
       // Act
-      const result = await serviceAuthVerifyUserIdToken(validVerifyData)
+      const result = await serviceAuthVerifyUserIdToken()
 
       // Assert
       expect(result.success).toBe(false)
@@ -383,7 +362,7 @@ describe('Service Auth', () => {
       vi.mocked(db.user.findUnique).mockResolvedValue(null)
 
       // Act
-      const result = await serviceAuthVerifyUserIdToken(validVerifyData)
+      const result = await serviceAuthVerifyUserIdToken()
 
       // Assert
       expect(result.success).toBe(false)
@@ -395,22 +374,6 @@ describe('Service Auth', () => {
       expect(db.user.findUnique).toHaveBeenCalledWith({
         where: { id: mockDecoded.userId },
       })
-    })
-
-    it('deve retornar false quando a validação dos parâmetros falha', async () => {
-      // Arrange - Simulando parâmetros inválidos
-      // Como o schema é z.undefined(), qualquer valor diferente de undefined falhará
-      const invalidParams = { invalidProp: 'test' } as any
-
-      // Act
-      const result = await serviceAuthVerifyUserIdToken(invalidParams)
-
-      // Assert
-      expect(result.success).toBe(false)
-      if (isError(result)) {
-        expect(result.error).toBe('validationError')
-      }
-      expect(cookieGet).not.toHaveBeenCalled()
     })
   })
 })

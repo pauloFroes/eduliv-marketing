@@ -1,7 +1,7 @@
 import { FormAuthLogin } from '@/components/form/auth'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
 
-export default function Login() {
+export default function LoginPage() {
   return (
     <div className='min-h-screen flex items-center justify-center'>
       <Card className='w-full max-w-sm'>

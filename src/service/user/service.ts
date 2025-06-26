@@ -15,6 +15,9 @@ import { cookieGet } from '@/helpers/cookie'
 import { jwtVerify } from '@/helpers/jwt'
 import { ErrorType } from '@/types'
 
+const TOKEN_COOKIE_NAME = process.env.TOKEN_COOKIE_NAME
+if (!TOKEN_COOKIE_NAME) throw new Error('TOKEN_COOKIE_NAME is not set')
+
 export const serviceUserCreate = async (params: UserCreate): Promise<boolean | ErrorType> => {
   const paramsValid = schemaUserCreate.safeParse(params)
   if (!paramsValid.success) return false
@@ -39,7 +42,7 @@ export const serviceUserGetByToken = async (params: UserGetByToken): Promise<Use
   const paramsValid = schemaUserGetByToken.safeParse(params)
   if (!paramsValid.success) return false
 
-  const token = await cookieGet({ name: 'token' })
+  const token = await cookieGet({ name: TOKEN_COOKIE_NAME })
   if (!token) return false
 
   const decoded = jwtVerify(token)

@@ -1,17 +1,18 @@
 'use server'
 
-import { db } from '@/lib/db'
-import { schemaAuthLogin, schemaAuthLogout, schemaAuthVerifyUserIdToken } from './schema'
-import { AuthLogout, AuthVerifyUserIdToken } from './types'
 import { cookieDelete, cookieGet, cookieSet } from '@/helpers/cookie'
 import { jwtSign, jwtVerify } from '@/helpers/jwt'
-import { AuthLogin } from './types'
 import { pwdVerify } from '@/helpers/pwd'
-import { ResponseType } from '@/types'
+import { db } from '@/lib/db'
+import { ResponsePromise } from '@/types'
+import { schemaAuthLogin } from './schema'
+import { AuthLogin } from './types'
 
 const isProduction = process.env.NODE_ENV === 'production'
+const TOKEN_COOKIE_NAME = process.env.TOKEN_COOKIE_NAME
+if (!TOKEN_COOKIE_NAME) throw new Error('TOKEN_COOKIE_NAME is not set')
 
-export const serviceAuthLogin = async (params: AuthLogin): Promise<ResponseType> => {
+export const serviceAuthLogin = async (params: AuthLogin): Promise<ResponsePromise> => {
   const paramsValid = schemaAuthLogin.safeParse(params)
   if (!paramsValid.success) return { success: false, error: 'validationError' }
   const { email, password } = paramsValid.data
@@ -24,7 +25,7 @@ export const serviceAuthLogin = async (params: AuthLogin): Promise<ResponseType>
 
   const token = jwtSign({ userId: userDb.id })
   await cookieSet({
-    name: 'token',
+    name: TOKEN_COOKIE_NAME,
     value: token,
     options: { maxAge: 60 * 60 * 24 * 30, httpOnly: true, path: '/', secure: isProduction },
   })
@@ -32,22 +33,16 @@ export const serviceAuthLogin = async (params: AuthLogin): Promise<ResponseType>
   return { success: true }
 }
 
-export const serviceAuthLogout = async (params: AuthLogout): Promise<ResponseType> => {
-  const paramsValid = schemaAuthLogout.safeParse(params)
-  if (!paramsValid.success) return { success: false, error: 'validationError' }
-
-  const token = await cookieGet({ name: 'token' })
+export const serviceAuthLogout = async (): Promise<ResponsePromise> => {
+  const token = await cookieGet({ name: TOKEN_COOKIE_NAME })
   if (!token) return { success: false, error: 'unauthorized' }
 
-  await cookieDelete({ name: 'token' })
+  await cookieDelete({ name: TOKEN_COOKIE_NAME })
   return { success: true }
 }
 
-export const serviceAuthVerifyUserIdToken = async (params: AuthVerifyUserIdToken): Promise<ResponseType> => {
-  const paramsValid = schemaAuthVerifyUserIdToken.safeParse(params)
-  if (!paramsValid.success) return { success: false, error: 'validationError' }
-
-  const token = await cookieGet({ name: 'token' })
+export const serviceAuthVerifyUserIdToken = async (): Promise<ResponsePromise> => {
+  const token = await cookieGet({ name: TOKEN_COOKIE_NAME })
   if (!token) return { success: false, error: 'unauthorized' }
 
   const decoded = jwtVerify(token)
