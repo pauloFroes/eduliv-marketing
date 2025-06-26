@@ -17,6 +17,24 @@ const eslintConfig = [
       import: (await import('eslint-plugin-import')).default,
     },
     rules: {
+      // Regra para impedir importações diretas de Button e Tooltip da pasta /ui
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['@/components/ui/button'],
+              message:
+                'Use o wrapper personalizado em vez de importar Button diretamente da pasta /ui. Importe de "@/components/ui/simple-button"',
+            },
+            {
+              group: ['@/components/ui/tooltip'],
+              message:
+                'Use o wrapper personalizado em vez de importar Tooltip diretamente da pasta /ui. Importe de "@/components/ui/simple-tooltip"',
+            },
+          ],
+        },
+      ],
       // Organização de imports
       'import/order': [
         'error',

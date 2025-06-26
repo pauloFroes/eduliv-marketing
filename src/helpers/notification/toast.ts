@@ -4,7 +4,7 @@ import { ErrorType } from '@/types'
 
 import { FormToast } from './types'
 
-export const formToast = <T>({
+export const notificationToastPromise = <T>({
   promise,
   loading,
   success,

@@ -5,21 +5,20 @@ import { useRouter } from 'next/navigation'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 
-import { Form, FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form'
-import { formToast } from '@/helpers/form/form'
+import { FormInput } from '@/components/form/form'
+import { Form } from '@/components/ui/form'
+import { Button } from '@/components/wrapper/button'
+import { notificationToastPromise } from '@/helpers/notification/toast'
 import { schemaAuthLogin } from '@/services/auth/schema'
 import { serviceAuthLogin } from '@/services/auth/service'
 import { AuthLogin } from '@/services/auth/types'
-
-import { Button } from '../../ui/button'
-import { Input } from '../../ui/input'
 
 export const AuthFormLogin = () => {
   const router = useRouter()
 
   const onSubmit = async (formData: AuthLogin) => {
     try {
-      await formToast({
+      await notificationToastPromise({
         promise: serviceAuthLogin(formData),
         loading: 'Efetuando login...',
         success: 'Login realizado com sucesso!',
@@ -37,7 +36,6 @@ export const AuthFormLogin = () => {
   })
 
   const {
-    control,
     handleSubmit,
     formState: { isSubmitting },
   } = form
@@ -46,34 +44,18 @@ export const AuthFormLogin = () => {
     <Form {...form}>
       <form onSubmit={handleSubmit(onSubmit)} className='space-y-6'>
         <div className='space-y-4'>
-          <FormField
-            control={control}
-            name='email'
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Email</FormLabel>
-                <FormControl>
-                  <Input {...field} placeholder='Informe seu email' disabled={isSubmitting} />
-                </FormControl>
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={control}
+          <FormInput label='Email' tooltip='Informe seu email' name='email' placeholder='email@exemplo.com.br' />
+          <FormInput
+            label='Senha'
+            tooltip='Informe sua senha'
             name='password'
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Senha</FormLabel>
-                <FormControl>
-                  <Input {...field} placeholder='***********' disabled={isSubmitting} type='password' />
-                </FormControl>
-              </FormItem>
-            )}
+            type='password'
+            placeholder='***********'
           />
         </div>
         <div>
-          <Button type='submit' className='w-full' size='lg' disabled={isSubmitting}>
-            {!isSubmitting ? 'Entrar' : 'Entrando...'}
+          <Button type='submit' disabled={isSubmitting} className='w-full'>
+            {isSubmitting ? 'Entrando...' : 'Entrar'}
           </Button>
         </div>
       </form>

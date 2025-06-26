@@ -7,7 +7,7 @@ const myEnv = dotenv.config()
 dotenvExpand.expand(myEnv)
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  reactStrictMode: false,
 }
 
 export default nextConfig
