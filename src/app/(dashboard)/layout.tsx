@@ -1,10 +1,10 @@
 import { redirect } from 'next/navigation'
 
-import { serviceAuthVerifyUserIdToken } from '@/services/auth/service'
+import { verifyUserToken } from '@/services/auth/auth.service'
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
-  const authResult = await serviceAuthVerifyUserIdToken()
+  const authResult = await verifyUserToken()
   if (!authResult.success) redirect('/login')
 
-  return <div>{children}</div>
+  return <>{children}</>
 }

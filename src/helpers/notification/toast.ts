@@ -1,36 +1,29 @@
 import { toast } from 'sonner'
 
-import { ErrorType } from '@/types'
+import { ApiError } from '@/types'
 
-import { FormToast } from './types'
+import { NotificationToastPromiseParams } from './notification.types'
 
-export const notificationToastPromise = <T>({
+export const notificationToastPromise = async ({
   promise,
   loading,
   success,
   errorMap,
-  actionOnSuccess = async () => {},
-}: FormToast<T>): Promise<T> => {
-  return new Promise<T>((resolve, reject) => {
-    toast.promise(
-      promise.then(res => {
-        if (!res.success) return Promise.reject(res.error)
-        actionOnSuccess()
-        return res.data as T
-      }),
-      {
-        loading,
-        success: (data: T) => {
-          resolve(data)
-          return success
-        },
-        error: (err: Error) => {
-          const error = err as unknown as ErrorType
-          const msg = errorMap?.[error] ?? 'Erro inesperado. Tente novamente.'
-          reject(msg)
-          return msg
-        },
-      },
-    )
-  })
+  actionOnSuccess,
+}: NotificationToastPromiseParams) => {
+  const toastId = toast.loading(loading)
+
+  try {
+    const result = await promise
+
+    if (result.success) {
+      toast.success(success, { id: toastId })
+      actionOnSuccess?.()
+    } else {
+      const errorMessage = errorMap?.[result.error as ApiError] || 'Erro inesperado'
+      toast.error(errorMessage, { id: toastId })
+    }
+  } catch {
+    toast.error('Erro inesperado', { id: toastId })
+  }
 }

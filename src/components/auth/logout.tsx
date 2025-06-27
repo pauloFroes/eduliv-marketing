@@ -2,30 +2,19 @@
 
 import { useRouter } from 'next/navigation'
 
-import { notificationToastPromise } from '@/helpers/notification/toast'
-import { serviceAuthLogout } from '@/services/auth/service'
+import { logoutUser } from '@/services/auth/auth.service'
 
-import { Button } from '../wrapper/button'
-
-export const AuthLogout = ({ title }: { title: string }) => {
+export const LogoutButton = () => {
   const router = useRouter()
 
-  const onSubmit = async () => {
-    try {
-      await notificationToastPromise({
-        promise: serviceAuthLogout(),
-        loading: 'Efetuando logout...',
-        success: 'Logout realizado com sucesso!',
-        actionOnSuccess: () => router.push('/login'),
-      })
-    } catch {
-      return
-    }
+  const handleLogout = async () => {
+    await logoutUser()
+    router.push('/login')
   }
 
   return (
-    <Button type='button' onClick={onSubmit}>
-      {title}
-    </Button>
+    <button onClick={handleLogout} className='text-red-600 hover:text-red-800'>
+      Sair
+    </button>
   )
 }

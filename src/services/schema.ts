@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-import { textCapitalize } from '@/helpers/text/text'
+import { capitalizeText } from '@/helpers/text'
 
 export const schemaUserEmail = z
   .string()
@@ -20,7 +20,7 @@ export const schemaUserFullName = z
   .min(3, 'Nome deve ter no mínimo 3 caracteres')
   .regex(/^[a-zA-ZÀ-ÿ\s]+$/, 'Nome deve conter apenas letras')
   .refine(name => name.trim().split(/\s+/).length > 1, 'Digite o nome completo')
-  .transform(name => textCapitalize(name.trim()))
+  .transform(name => capitalizeText(name.trim()))
 
 export const schemaUserPhone = z
   .string()

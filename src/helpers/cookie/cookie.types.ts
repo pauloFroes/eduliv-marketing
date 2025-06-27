@@ -1,4 +1,4 @@
-interface Cookie {
+export type Cookie = {
   name: string
   value?: string
   options?: {
@@ -8,5 +8,3 @@ interface Cookie {
     secure?: boolean
   }
 }
-
-export type { Cookie }

@@ -9,9 +9,9 @@ import { FormInput } from '@/components/form/form'
 import { Form } from '@/components/ui/form'
 import { Button } from '@/components/wrapper/button'
 import { notificationToastPromise } from '@/helpers/notification/toast'
+import { authenticateUser } from '@/services/auth/auth.service'
+import { AuthLogin } from '@/services/auth/auth.types'
 import { schemaAuthLogin } from '@/services/auth/schema'
-import { serviceAuthLogin } from '@/services/auth/service'
-import { AuthLogin } from '@/services/auth/types'
 
 export const AuthFormLogin = () => {
   const router = useRouter()
@@ -19,7 +19,7 @@ export const AuthFormLogin = () => {
   const onSubmit = async (formData: AuthLogin) => {
     try {
       await notificationToastPromise({
-        promise: serviceAuthLogin(formData),
+        promise: authenticateUser(formData),
         loading: 'Efetuando login...',
         success: 'Login realizado com sucesso!',
         errorMap: { invalidCredentials: 'E-mail ou senha inválidos.' },

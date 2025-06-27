@@ -1,6 +1,6 @@
-import { AppConfig } from './types'
+import { AppConfig } from './config.types'
 
-export const config: AppConfig = {
+export const appConfig: AppConfig = {
   auth: {
     tokenCookieName: process.env.TOKEN_COOKIE_NAME || '_edu_token',
     jwtSecret: process.env.JWT_SECRET || '',
@@ -11,6 +11,6 @@ export const config: AppConfig = {
 } as const
 
 // Validações de configuração obrigatória
-if (!config.auth.jwtSecret) throw new Error('JWT_SECRET is not set')
-if (!config.auth.jwtExpiresIn) throw new Error('JWT_EXPIRES_IN is not set')
-if (!config.auth.bcryptCost) throw new Error('BCRYPT_COST is not set')
+if (!appConfig.auth.jwtSecret) throw new Error('JWT_SECRET is not set')
+if (!appConfig.auth.jwtExpiresIn) throw new Error('JWT_EXPIRES_IN is not set')
+if (!appConfig.auth.bcryptCost) throw new Error('BCRYPT_COST is not set')
