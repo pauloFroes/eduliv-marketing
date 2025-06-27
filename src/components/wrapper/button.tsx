@@ -1,5 +1,6 @@
 import { Button as ButtonRoot } from '@/components/ui/button'
-import { cn } from '@/lib/utils/utils'
+
+import { cn } from '../../config/cn/cn.config'
 
 interface ButtonProps {
   children: React.ReactNode

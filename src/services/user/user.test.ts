@@ -17,8 +17,6 @@ import { getCookie } from '@/helpers/cookie'
 import { hashPassword } from '@/helpers/crypt'
 import { verifyJwt } from '@/helpers/jwt'
 import { capitalizeText, getFirstName } from '@/helpers/text'
-import { appConfig } from '@/lib/config'
-import { db } from '@/lib/db'
 
 import { UserCreate } from './user.types'
 
@@ -43,7 +41,15 @@ type JwtPayload = {
 }
 
 // Mocks das dependências
-vi.mock('@/lib/db/db', () => ({
+vi.mock('@/config/app', () => ({
+  appConfig: {
+    auth: {
+      tokenCookieName: '_edu_token',
+    },
+  },
+}))
+
+vi.mock('@/config/db', () => ({
   db: {
     user: {
       findUnique: vi.fn(),
@@ -78,6 +84,10 @@ vi.mocked(capitalizeText).mockImplementation((name: string) =>
     .map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
     .join(' '),
 )
+
+// Importar dos mocks
+const { appConfig } = await import('../../config/app')
+const { db } = await import('../../config/db')
 
 describe('Service User', () => {
   beforeEach(() => {

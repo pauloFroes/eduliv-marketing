@@ -22,11 +22,12 @@
     "docker:clean": "docker-compose down -v --remove-orphans",
     "setup": "npm install && cp env.example .env && docker-compose up -d && sleep 15 && npx tsx prisma/seed.ts",
     "prisma:update": "npx prisma generate && npx prisma migrate dev",
-    "check": "tsc && eslint . --ext .ts,.tsx && vitest run",
+    "check": "tsc && eslint . --ext .ts,.tsx && vitest run && npm run check-filenames",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "lint:check": "eslint . --ext .ts,.tsx",
-    "organize-imports": "prettier --write . && eslint . --ext .ts,.tsx --fix"
+    "organize-imports": "prettier --write . && eslint . --ext .ts,.tsx --fix",
+    "check-filenames": "node scripts/check-filenames.js"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.1.1",

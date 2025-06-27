@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken'
 
-import { appConfig } from '@/lib/config'
+import { appConfig } from '@/config/app'
 
 type JwtPayload = {
   userId: string

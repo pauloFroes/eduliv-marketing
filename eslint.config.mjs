@@ -15,6 +15,7 @@ const eslintConfig = [
   {
     plugins: {
       import: (await import('eslint-plugin-import')).default,
+      '@typescript-eslint': (await import('@typescript-eslint/eslint-plugin')).default,
     },
     rules: {
       // Organização de imports
@@ -52,6 +53,11 @@ const eslintConfig = [
               group: 'internal',
               position: 'after',
             },
+            {
+              pattern: '@/config/**',
+              group: 'internal',
+              position: 'after',
+            },
           ],
           pathGroupsExcludedImportTypes: ['react', 'next'],
         },
@@ -77,6 +83,49 @@ const eslintConfig = [
           ],
         },
       ],
+      // Convenções de nomes do projeto
+      '@typescript-eslint/naming-convention': [
+        'error',
+        // Exceção para __filename e __dirname
+        {
+          selector: 'variable',
+          format: null,
+          filter: {
+            regex: '^__filename$|^__dirname$',
+            match: true,
+          },
+        },
+        // Variáveis: camelCase, UPPER_CASE ou PascalCase (para componentes React)
+        {
+          selector: 'variable',
+          format: ['camelCase', 'UPPER_CASE', 'PascalCase'],
+        },
+        // Funções: camelCase (ou PascalCase para componentes)
+        {
+          selector: 'function',
+          format: ['camelCase', 'PascalCase'],
+        },
+        // Tipos, interfaces, enums: PascalCase
+        {
+          selector: 'typeLike',
+          format: ['PascalCase'],
+        },
+        // Parâmetros genéricos: prefixo T
+        {
+          selector: 'typeParameter',
+          format: ['PascalCase'],
+          prefix: ['T'],
+        },
+        // Interfaces não podem começar com I
+        {
+          selector: 'interface',
+          format: ['PascalCase'],
+          custom: {
+            regex: '^I[A-Z]',
+            match: false,
+          },
+        },
+      ],
     },
     settings: {
       'import/resolver': {
@@ -86,6 +135,7 @@ const eslintConfig = [
         },
         node: {
           extensions: ['.js', '.jsx', '.ts', '.tsx'],
+          moduleDirectory: ['node_modules', 'src', 'config'],
         },
       },
     },
@@ -106,6 +156,7 @@ const eslintConfig = [
       '.next/**/*',
       'dist/**/*',
       'build/**/*',
+      'scripts/**/*',
     ],
   },
 ]

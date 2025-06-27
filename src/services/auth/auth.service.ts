@@ -1,16 +1,14 @@
 'use server'
 
+import { appConfig } from '@/config/app'
+import { db } from '@/config/db'
 import { deleteCookie, getCookie, setCookie } from '@/helpers/cookie'
 import { verifyPassword } from '@/helpers/crypt'
 import { signJwt, verifyJwt } from '@/helpers/jwt'
-import { appConfig } from '@/lib/config'
-import { db } from '@/lib/db'
 import { ApiResponse } from '@/types'
 
 import { AuthLogin } from './auth.types'
 import { schemaAuthLogin } from './schema'
-
-const isProduction = process.env.NODE_ENV === 'production'
 
 export const authenticateUser = async (credentials: AuthLogin): Promise<ApiResponse> => {
   const paramsValid = schemaAuthLogin.safeParse(credentials)
@@ -27,7 +25,12 @@ export const authenticateUser = async (credentials: AuthLogin): Promise<ApiRespo
   await setCookie({
     name: appConfig.auth.tokenCookieName,
     value: token,
-    options: { maxAge: 60 * 60 * 24 * 30, httpOnly: true, path: '/', secure: isProduction },
+    options: {
+      maxAge: 60 * 60 * 24 * 30,
+      httpOnly: true,
+      path: '/',
+      secure: appConfig.auth.isProduction,
+    },
   })
 
   return { success: true }

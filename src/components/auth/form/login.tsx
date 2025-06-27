@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 
-import { FormInput } from '@/components/form/form'
+import { FormInput } from '@/components/form-input.component'
 import { Form } from '@/components/ui/form'
 import { Button } from '@/components/wrapper/button'
 import { notificationToastPromise } from '@/helpers/notification/toast'

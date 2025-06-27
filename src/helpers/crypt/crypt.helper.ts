@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt'
 
-import { appConfig } from '@/lib/config'
+import { appConfig } from '@/config/app'
 
 export const hashPassword = async (password: string): Promise<string> => {
   return bcrypt.hash(password, appConfig.auth.bcryptCost)

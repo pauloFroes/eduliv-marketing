@@ -3,9 +3,9 @@ import { InputHTMLAttributes } from 'react'
 import { Info } from 'lucide-react'
 import { useFormContext } from 'react-hook-form'
 
-import { FormControl, FormField, FormItem, FormLabel } from '../ui/form'
-import { Input } from '../ui/input'
-import { NotificationTooltip } from '../wrapper/notification'
+import { FormControl, FormField, FormItem, FormLabel } from './ui/form'
+import { Input } from './ui/input'
+import { NotificationTooltip } from './wrapper/notification'
 
 interface FormFieldProps {
   label: string

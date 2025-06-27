@@ -4,10 +4,10 @@ import { getCookie } from '@/helpers/cookie'
 import { hashPassword } from '@/helpers/crypt'
 import { verifyJwt } from '@/helpers/jwt'
 import { getFirstName } from '@/helpers/text'
-import { appConfig } from '@/lib/config'
-import { db } from '@/lib/db'
 import { ApiError } from '@/types'
 
+import { appConfig } from '../../config/app'
+import { db } from '../../config/db'
 import { UserSession } from '../session.types'
 
 import { schemaUserCreate, UserCreate } from '.'
