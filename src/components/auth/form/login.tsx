@@ -8,17 +8,17 @@ import { useForm } from 'react-hook-form'
 import { FormInput } from '@/components/form-input.component'
 import { Form } from '@/components/ui/form'
 import { Button } from '@/components/wrapper/button'
-import { notificationToastPromise } from '@/helpers/notification/toast'
+import { toastPromise } from '@/helpers/toast/toast.helper'
 import { authenticateUser } from '@/services/auth/auth.service'
-import { AuthLogin } from '@/services/auth/auth.types'
-import { schemaAuthLogin } from '@/services/auth/schema'
+import { schemaAuthLogin } from '@/services/auth/auth.service.schema'
+import { AuthLogin } from '@/services/auth/auth.service.types'
 
 export const AuthFormLogin = () => {
   const router = useRouter()
 
   const onSubmit = async (formData: AuthLogin) => {
     try {
-      await notificationToastPromise({
+      await toastPromise({
         promise: authenticateUser(formData),
         loading: 'Efetuando login...',
         success: 'Login realizado com sucesso!',

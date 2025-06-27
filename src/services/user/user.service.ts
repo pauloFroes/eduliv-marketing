@@ -1,14 +1,14 @@
 'use server'
 
 import { getCookie } from '@/helpers/cookie'
-import { hashPassword } from '@/helpers/crypt'
+import { cryptApply } from '@/helpers/crypt/crypt.helper'
 import { verifyJwt } from '@/helpers/jwt'
 import { getFirstName } from '@/helpers/text'
 import { ApiError } from '@/types'
 
 import { appConfig } from '../../config/app'
 import { db } from '../../config/db'
-import { UserSession } from '../session.types'
+import { UserSession } from '../service.types'
 
 import { schemaUserCreate, UserCreate } from '.'
 
@@ -22,7 +22,7 @@ export const createUser = async (userData: UserCreate): Promise<boolean | ApiErr
     const userDb = await db.user.findUnique({ where: { email } })
     if (userDb) return 'alreadyExists'
 
-    const passwordCrypt = await hashPassword(password)
+    const passwordCrypt = await cryptApply(password)
     const displayName = getFirstName(fullName)
 
     const userDbCreated = await db.user.create({

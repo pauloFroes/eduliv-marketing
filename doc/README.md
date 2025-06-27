@@ -24,6 +24,17 @@ Regras para organização de tipos TypeScript e padrões de export.
 - Organizando exports de módulos
 - Criando barrel files
 
+### [🧪 Padrões de Testes](./testing-guidelines.md)
+
+Regras para escrita de testes, cobertura e organização.
+
+**Quando consultar:**
+
+- Escrevendo novos testes
+- Refatorando testes existentes
+- Definindo cobertura de cenários
+- Organizando estrutura de testes
+
 ## 🚀 Como Usar
 
 ### Para Desenvolvedores
@@ -45,6 +56,7 @@ Antes de commitar, verifique:
 - [ ] Nomenclaturas seguem os padrões definidos
 - [ ] Tipos estão organizados corretamente
 - [ ] Exports usam barrel files quando apropriado
+- [ ] Testes seguem os padrões de cobertura e organização
 - [ ] Documentação foi atualizada se necessário
 
 ## 🔄 Manutenção

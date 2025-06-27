@@ -59,15 +59,15 @@ const CONFIG = {
   directorySuffixes: {
     'src/services': '.service.ts',
     'src/helpers': '.helper.ts',
-    'src/lib/config': '.config.ts',
+    'src/config': '.config.ts',
     'src/types': '.types.ts',
   },
 
   // Arquivos especiais permitidos em cada diretório
   allowedSpecialFiles: {
-    'src/services': ['.types.ts', '.service.ts', 'schema.ts', 'index.ts', 'test.ts'],
-    'src/helpers': ['.types.ts', '.helper.ts', 'index.ts', 'test.ts', 'toast.ts'],
-    'src/lib/config': ['.types.ts', '.config.ts', 'index.ts', 'test.ts'],
+    'src/services': ['.service.ts', '.service.test.ts', '.service.types.ts', '.service.schema.ts', 'index.ts'],
+    'src/helpers': ['.helper.ts', '.helper.test.ts', 'index.ts'],
+    'src/config': ['.config.ts', 'index.ts'],
     'src/types': ['.types.ts', 'index.ts'],
   },
 
@@ -81,6 +81,8 @@ const CONFIG = {
   // Padrões específicos para componentes
   componentPatterns: [
     /^[a-z0-9]+(?:-[a-z0-9]+)*\.component\.(ts|tsx)$/, // form-input.component.tsx
+    /^[a-z0-9]+(?:-[a-z0-9]+)*\.form\.(ts|tsx)$/, // login.form.tsx
+    /^[a-z0-9]+(?:-[a-z0-9]+)*\.wrapper\.(ts|tsx)$/, // button.wrapper.tsx
   ],
 
   // Exceções especiais
@@ -98,12 +100,17 @@ const CONFIG = {
     'test.ts',
     'test.tsx',
     'setup.ts',
+    'test.setup.ts',
+    'service.types.ts',
+    'services.schema.ts',
   ],
 
-  // Padrões de nomes com pontos permitidos (como cookie.helper.ts)
+  // Padrões de nomes com pontos permitidos (como cookie.helper.ts, auth.service.ts)
   dotPatterns: [
-    /^[a-z]+\.[a-z]+\.(ts|tsx|js|jsx)$/, // cookie.helper.ts
-    /^[a-z]+\.[a-z]+\.(types|service|helper|config)\.(ts|tsx)$/, // auth.types.ts
+    /^[a-z]+\.[a-z]+\.(ts|tsx|js|jsx)$/, // cookie.helper.ts, auth.service.ts
+    /^[a-z]+\.[a-z]+\.(types|service|helper|config)\.(ts|tsx)$/, // auth.service.types.ts
+    /^[a-z]+\.[a-z]+\.(test|spec)\.(ts|tsx)$/, // cookie.helper.test.ts, auth.service.test.ts
+    /^[a-z]+\.[a-z]+\.(schema)\.(ts|tsx)$/, // auth.service.schema.ts, user.service.schema.ts
   ],
 
   // Padrões de nomes redundantes proibidos
@@ -133,7 +140,7 @@ function isValidFileName(filename) {
     return { valid: true, reason: 'Padrão de componente válido' }
   }
 
-  // Verifica se segue padrões com pontos (como cookie.helper.ts)
+  // Verifica se segue padrões com pontos (como cookie.helper.ts, auth.service.ts)
   const followsDotPattern = CONFIG.dotPatterns.some(pattern => pattern.test(filename))
 
   if (followsDotPattern) {
@@ -166,7 +173,10 @@ function hasRequiredSuffix(filePath, filename) {
     filename === 'index.tsx' ||
     filename === 'test.ts' ||
     filename === 'test.tsx' ||
-    filename === 'setup.ts'
+    filename === 'setup.ts' ||
+    filename === 'test.setup.ts' ||
+    filename === 'service.types.ts' ||
+    filename === 'services.schema.ts'
   ) {
     return { valid: true, reason: 'Arquivo especial permitido' }
   }
@@ -203,6 +213,10 @@ function hasRequiredSuffix(filePath, filename) {
       }
       // Ignora arquivos que já têm sufixo .component.tsx
       if (filename.endsWith('.component.tsx')) {
+        continue
+      }
+      // Ignora arquivos especiais
+      if (filename === 'test.setup.ts' || filename === 'service.types.ts' || filename === 'services.schema.ts') {
         continue
       }
       return {

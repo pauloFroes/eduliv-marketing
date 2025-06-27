@@ -1,1 +1,1 @@
-export { hashPassword, verifyPassword } from './crypt.helper'
+export { cryptApply, verifyCrypt } from './crypt.helper'

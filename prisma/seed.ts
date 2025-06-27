@@ -1,12 +1,12 @@
 import { PrismaClient } from '@prisma/client'
 
-import { hashPassword } from '../src/helpers/crypt'
+import { cryptApply } from '../src/helpers/crypt/crypt.helper'
 import { getFirstName } from '../src/helpers/text'
 
 const prisma = new PrismaClient()
 
 async function main() {
-  const password = await hashPassword('123456')
+  const password = await cryptApply('123456')
   const displayName = getFirstName('João Silva Santos')
 
   const user = await prisma.user.upsert({

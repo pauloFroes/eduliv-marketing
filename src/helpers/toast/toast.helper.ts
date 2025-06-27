@@ -1,16 +1,16 @@
 import { toast } from 'sonner'
 
-import { ApiError } from '@/types'
+import { ApiError, ApiResponse } from '@/types'
 
-import { NotificationToastPromiseParams } from './notification.types'
+type ToastPromiseParams = {
+  promise: Promise<ApiResponse>
+  loading: string
+  success: string
+  errorMap?: Partial<Record<ApiError, string>>
+  actionOnSuccess?: () => void
+}
 
-export const notificationToastPromise = async ({
-  promise,
-  loading,
-  success,
-  errorMap,
-  actionOnSuccess,
-}: NotificationToastPromiseParams) => {
+export const toastPromise = async ({ promise, loading, success, errorMap, actionOnSuccess }: ToastPromiseParams) => {
   const toastId = toast.loading(loading)
 
   try {

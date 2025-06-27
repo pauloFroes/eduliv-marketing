@@ -35,30 +35,53 @@ core.types.ts → common.types.ts
 
 ```
 services/auth/auth.service.ts
+services/auth/auth.service.test.ts
+services/auth/auth.service.types.ts
+services/auth/auth.service.schema.ts
 services/user/user.service.ts
+services/user/user.service.test.ts
+services/user/user.service.types.ts
+services/user/user.service.schema.ts
 ```
 
 **Helpers:**
 
 ```
 helpers/cookie/cookie.helper.ts
+helpers/cookie/cookie.helper.test.ts
 helpers/crypt/crypt.helper.ts
+helpers/crypt/crypt.helper.test.ts
 helpers/jwt/jwt.helper.ts
+helpers/jwt/jwt.helper.test.ts
 helpers/text/text.helper.ts
+helpers/text/text.helper.test.ts
+helpers/toast/toast.helper.ts
+helpers/toast/toast.helper.test.ts
 ```
 
 **Configurações:**
 
 ```
-lib/config/app.config.ts
-lib/config/config.types.ts
+config/app/app.config.ts
+config/cn/cn.config.ts
+config/db/db.config.ts
 ```
 
 **Tipos:**
 
 ```
 types/common.types.ts
-types/core.types.ts
+types/index.ts
+```
+
+**Componentes:**
+
+```
+components/form-input.component.tsx
+components/auth/login.form.tsx
+components/ui/button.tsx
+components/wrapper/button.wrapper.tsx
+components/wrapper/notification.wrapper.tsx
 ```
 
 ---
@@ -157,7 +180,7 @@ components/auth/login.form.test.tsx
 
 ```ts
 // ❌ Imports verbosos
-import { cookieSet } from '@/helpers/cookie/cookie.helper'
+import { setCookie } from '@/helpers/cookie/cookie.helper'
 import { authenticateUser } from '@/services/auth/auth.service'
 
 // ✅ Imports limpos
@@ -181,7 +204,7 @@ import { setCookie } from '@/helpers/cookie'
 import { authenticateUser } from '@/services/auth'
 
 // 4. Imports relativos
-import { AuthLogin } from './auth.types'
+import { AuthLogin } from './auth.service.types'
 ```
 
 ---
@@ -204,3 +227,34 @@ import { AuthLogin } from './auth.types'
 - [ ] Identificadores são descritivos?
 - [ ] Barrel file foi atualizado?
 - [ ] Teste foi criado com nomenclatura correta?
+
+### Padrões Específicos por Diretório
+
+#### Services (`src/services/`)
+
+- Arquivos principais: `[nome].service.ts`
+- Testes: `[nome].service.test.ts`
+- Tipos: `[nome].service.types.ts`
+- Schemas: `[nome].service.schema.ts`
+- Barrel file: `index.ts`
+
+#### Helpers (`src/helpers/`)
+
+- Arquivos principais: `[nome].helper.ts`
+- Testes: `[nome].helper.test.ts`
+- Barrel file: `index.ts`
+
+#### Config (`src/config/`)
+
+- Arquivos principais: `[nome].config.ts`
+- Barrel file: `index.ts`
+
+#### Types (`src/types/`)
+
+- Arquivos principais: `[nome].types.ts`
+- Barrel file: `index.ts`
+
+#### Components (`src/components/`)
+
+- Componentes: `[nome].component.tsx` ou `[nome].form.tsx` ou `[nome].wrapper.tsx`
+- Testes: `[nome].component.test.tsx` ou `[nome].form.test.tsx` ou `[nome].wrapper.test.tsx`

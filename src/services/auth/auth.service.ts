@@ -3,12 +3,12 @@
 import { appConfig } from '@/config/app'
 import { db } from '@/config/db'
 import { deleteCookie, getCookie, setCookie } from '@/helpers/cookie'
-import { verifyPassword } from '@/helpers/crypt'
+import { verifyCrypt } from '@/helpers/crypt'
 import { signJwt, verifyJwt } from '@/helpers/jwt'
 import { ApiResponse } from '@/types'
 
-import { AuthLogin } from './auth.types'
-import { schemaAuthLogin } from './schema'
+import { schemaAuthLogin } from './auth.service.schema'
+import { AuthLogin } from './auth.service.types'
 
 export const authenticateUser = async (credentials: AuthLogin): Promise<ApiResponse> => {
   const paramsValid = schemaAuthLogin.safeParse(credentials)
@@ -18,20 +18,15 @@ export const authenticateUser = async (credentials: AuthLogin): Promise<ApiRespo
   const userDb = await db.user.findUnique({ where: { email } })
   if (!userDb) return { success: false, error: 'invalidCredentials' }
 
-  const passwordValid = await verifyPassword(password, userDb.password)
+  const passwordValid = await verifyCrypt(password, userDb.password)
   if (!passwordValid) return { success: false, error: 'invalidCredentials' }
 
   const token = signJwt({ userId: userDb.id })
-  await setCookie({
-    name: appConfig.auth.tokenCookieName,
-    value: token,
-    options: {
-      maxAge: 60 * 60 * 24 * 30,
-      httpOnly: true,
-      path: '/',
-      secure: appConfig.auth.isProduction,
-    },
-  })
+  const maxAge = 60 * 60 * 24 * 30
+  const secure = appConfig.auth.isProduction
+  const options = { maxAge, httpOnly: true, path: '/', secure }
+  const cookieName = appConfig.auth.tokenCookieName
+  await setCookie({ name: cookieName, value: token, options })
 
   return { success: true }
 }
